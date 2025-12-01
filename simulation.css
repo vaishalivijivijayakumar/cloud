@@ -1,12 +1,159 @@
-/* simulation.css
-   Template styles for simulations
-   - Expects CSS variables from base-template.html
-   - Add simulation-specific styles below
+/*
+  Tarcin Modular Simulation Engine
+  File: simulation.css
+  Description: All custom simulation styles for the Chemical Kinetics module.
 */
 
-.sim-root {
+/* 1. Main Simulation Container & Grid Layout */
+.simulation-container {
   width: 100%;
-  max-width: 920px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0;
+}
+
+.simulation-main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 2 parts for main content, 1 part for MST panel */
+  gap: 24px;
+  margin-top: 20px;
+  align-items: start;
+}
+
+/* 2. Component Placement */
+.main-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.mst-panel {
+  grid-column: 2 / 3;
+}
+
+.bottom-panels-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* 3. Header & Hook */
+.simulation-header {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.simulation-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--color-primary);
+}
+
+.hook-concept {
+  font-size: 1rem;
+  font-style: italic;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* 4. Scene & MST Tabs */
+.scene-tabs, .mst-tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.scene-tab-button, .mst-tab-button {
+  padding: 10px 20px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
   color: var(--color-text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.scene-tab-button.active, .mst-tab-button.active {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 120, 255, 0.3);
+}
+
+.scene-tab-button:hover, .mst-tab-button:hover {
+  background-color: var(--color-border);
+}
+.scene-tab-button.active:hover, .mst-tab-button.active:hover {
+    background-color: #0056b3;
+}
+
+
+/* 5. Main Panels & Containers */
+.micro-view-container, .mst-panel, .control-panel, .lab-challenges {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.mst-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.mst-content-container, .lab-challenge-container, #controls-container {
+    margin-top: 16px;
+    flex-grow: 1;
+}
+.mst-content-container p:first-child {
+    margin-top: 0;
+}
+
+
+/* 6. Scene Styling */
+.scene {
+  display: none; /* Hidden by default */
+  width: 100%;
+  height: 400px; /* Default height */
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.scene.active {
+  display: block; /* Show active scene */
+}
+
+.graph-container, .visual-container, .collision-box {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-background);
+    border-radius: 8px;
+    border: 1px dashed var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    opacity: 0.7;
+}
+
+/* 7. Control Panel & Lab Challenges Specifics */
+.control-panel h4, .lab-challenges h4, .mst-panel h3 {
+  margin: 0 0 16px 0;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 12px;
+  color: var(--color-primary);
+}
+.lab-challenges {
+    border-color: var(--color-secondary);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

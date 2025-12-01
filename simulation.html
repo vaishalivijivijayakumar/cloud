@@ -1,6 +1,92 @@
-<!-- simulation.html -->
-<!-- Template: Add your simulation markup inside .sim-root -->
+<!--
+  Tarcin Modular Simulation Engine
+  File: simulation.html
+  Description: All UI, scenes, visuals, and panels for the Chemical Kinetics module.
+-->
 
-<div data-sim-root id="sim-root" class="sim-root">
-  <!-- Add simulation content here -->
+<div class="simulation-container">
+  <!-- 1. Header Block -->
+  <header class="simulation-header">
+    <h1>Chemical Kinetics: Rate, Order, Mechanism & Temperature Dependence</h1>
+    <p class="hook-concept">The speed of a reaction depends on how often and how effectively reacting particles collide, and on the energy barrier they must cross.</p>
+  </header>
+
+  <!-- 2. Scene Tabs Block -->
+  <nav class="scene-tabs">
+    <button class="scene-tab-button active" data-scene="scene1">1. Rate Measurement</button>
+    <button class="scene-tab-button" data-scene="scene2">2. Rate Law & Order</button>
+    <button class="scene-tab-button" data-scene="scene3">3. Integrated Rate Laws</button>
+    <button class="scene-tab-button" data-scene="scene4">4. Temperature & Catalyst</button>
+    <button class="scene-tab-button" data-scene="scene5">5. Collision Theory</button>
+  </nav>
+
+  <!-- 3. Main Content Grid -->
+  <main class="simulation-main-grid">
+
+    <!-- Wrapper for the entire left column (Micro View + Bottom Panels) -->
+    <div class="main-content-wrapper">
+
+      <!-- 3.1. Micro View (Main Visual Area) -->
+      <div class="micro-view-container">
+        <div id="scene-container" class="scene-container">
+          <!-- Scene 1: Measuring Reaction Rate -->
+          <div id="scene1" class="scene active">
+            <div class="graph-container" id="scene1-graph"></div>
+          </div>
+          <!-- Scene 2: Rate Law, Order & Molecularity -->
+          <div id="scene2" class="scene">
+              <div class="graph-container" id="scene2-graph"></div>
+          </div>
+          <!-- Scene 3: Integrated Rate Laws & Half-Life -->
+          <div id="scene3" class="scene">
+              <div class="graph-container" id="scene3-graph"></div>
+          </div>
+          <!-- Scene 4: Temperature, Arrhenius Plot & Catalyst -->
+          <div id="scene4" class="scene">
+            <div class="visual-container" id="scene4-visual"></div>
+          </div>
+          <!-- Scene 5: Collision Theory & Reaction Mechanism -->
+          <div id="scene5" class="scene">
+            <div class="collision-box" id="scene5-collision"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wrapper for the two bottom panels -->
+      <div class="bottom-panels-wrapper">
+        <!-- 3.3. Control Panel -->
+        <section class="control-panel">
+          <h4>Control Panel</h4>
+          <div id="controls-container">
+            <!-- Controls will be dynamically loaded by JS based on scene -->
+          </div>
+        </section>
+
+        <!-- 3.4. Lab Challenges -->
+        <section class="lab-challenges">
+          <h4>Lab Challenges</h4>
+          <div id="lab-challenge-container">
+              <!-- Challenges will be dynamically loaded by JS -->
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- 3.2. Multi-Style Thinking Panel -->
+    <aside class="mst-panel">
+      <h3>Multi-Style Thinking</h3>
+      <div class="mst-tabs">
+        <button class="mst-tab-button active" data-mst="visual">Visual</button>
+        <button class="mst-tab-button" data-mst="analogy">Analogy</button>
+        <button class="mst-tab-button" data-mst="cause">Cause</button>
+        <button class="mst-tab-button" data-mst="model">Model</button>
+        <button class="mst-tab-button" data-mst="fix">Fix</button>
+      </div>
+      <div id="mst-content-container" class="mst-content-container">
+        <!-- Content will be dynamically loaded by JS -->
+      </div>
+    </aside>
+
+  </main>
 </div>

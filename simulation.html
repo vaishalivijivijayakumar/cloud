@@ -4,9 +4,8 @@
   Chemical Kinetics: Rate, Order, Mechanism & Temperature Dependence
 -->
 
-<!-- Dependencies: Chart.js for graphing -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata"></script>
+<!-- The dynamic loader will handle loading Chart.js and the main simulation script -->
+<script src="dynamic-loader.js"></script>
 
 <div id="simulation-container">
   <!-- HOOKED ON CONCEPT BANNER -->
@@ -34,6 +33,11 @@
           <div id="s1-readout" class="readout-panel">
              <p><strong>Average Rate:</strong> <span id="avg-rate-output">-</span> mol L⁻¹ s⁻¹</p>
              <p><strong>Instantaneous Rate:</strong> <span id="inst-rate-output">-</span> mol L⁻¹ s⁻¹</p>
+          </div>
+          <div class="gauge-container">
+             <div class="gauge-body"></div>
+             <div class="gauge-fill" id="s1-gauge-fill"></div>
+             <div class="gauge-label" id="s1-gauge-label">0%</div>
           </div>
         </div>
         <div id="control-panel-s1" class="panel control-panel">
@@ -168,10 +172,17 @@
             </div>
             <div id="control-panel-s4" class="panel control-panel">
                 <h3>Controls</h3>
-                <label for="s4-temperature">Temperature (°C):</label>
-                <input type="range" id="s4-temperature" min="10" max="80" value="25" step="1">
-                <span id="s4-temperature-value">25</span> °C
-                <br><br>
+                <div class="compact-controls">
+                    <div>
+                        <label for="s4-temperature">Temperature (°C):</label>
+                        <input type="range" id="s4-temperature" min="10" max="80" value="25" step="1">
+                        <span id="s4-temperature-value">25</span> °C
+                    </div>
+                    <div class="thermometer">
+                        <div class="thermometer-level" id="s4-thermometer-level"></div>
+                        <div class="thermometer-bulb"></div>
+                    </div>
+                </div>
                 <label for="s4-catalyst">Catalyst:</label>
                 <button id="s4-catalyst-toggle">Add Catalyst</button>
             </div>
@@ -196,11 +207,17 @@
                 <label for="s5-concentration">Concentration:</label>
                 <input type="range" id="s5-concentration" min="10" max="50" value="20" step="5">
                 <span id="s5-concentration-value">20</span> particles
-                <br><br>
-                <label for="s5-temperature">Temperature:</label>
-                <input type="range" id="s5-temperature" min="283" max="353" value="298" step="10">
-                <span id="s5-temperature-value">298</span> K
-                <br><br>
+                <div class="compact-controls">
+                    <div>
+                        <label for="s5-temperature">Temperature (K):</label>
+                        <input type="range" id="s5-temperature" min="283" max="353" value="298" step="10">
+                        <span id="s5-temperature-value">298</span> K
+                    </div>
+                    <div class="thermometer">
+                        <div class="thermometer-level" id="s5-thermometer-level"></div>
+                        <div class="thermometer-bulb"></div>
+                    </div>
+                </div>
                 <button id="rds-popup-btn">Explain Rate-Determining Step</button>
             </div>
             <div id="mst-panel-s5" class="panel mst-panel"></div>

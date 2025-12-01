@@ -9,51 +9,51 @@ const mstContent = {
     1: {
         title: "Visualizing Rates",
         items: [
-            "<strong>Visual:</strong> The concentration–time graph is a curve, not a straight line. A secant between two points gives the average rate, while the tangent at a single point gives the instantaneous rate.",
-            "<strong>Analogy:</strong> This is like comparing your average speed over a whole car trip (average rate) versus the exact speed on your speedometer at one specific moment (instantaneous rate).",
+            "<strong>Visual:</strong> The concentration–time graph is a curve. A <span class='term'>secant</span> between two points gives the <span class='term'>average rate</span>, while the <span class='term'>tangent</span> at a single point gives the <span class='term'>instantaneous rate</span>.",
+            "<strong>Analogy:</strong> This is like comparing your average speed over a whole car trip versus the exact speed on your speedometer at one specific moment.",
             "<strong>Cause:</strong> The rate of reaction, shown by the curve's steepness, is highest at the start because the concentration of reactants is highest, leading to more frequent collisions.",
-            "<strong>Model:</strong> Average rate = –Δ[R]/Δt. Instantaneous rate = –d[R]/dt.",
-            "<strong>Fix:</strong> A common mistake is thinking the reaction rate is constant. The graph clearly shows the rate decreases as reactants are used up."
+            "<strong>Model:</strong> Average rate = <span class='equation'>–Δ[R]/Δt</span>. Instantaneous rate = <span class='equation'>–d[R]/dt</span>.",
+            "<strong>Fix:</strong> <span class='misconception'>A common mistake is thinking the reaction rate is constant.</span> The graph clearly shows the rate decreases as reactants are used up."
         ]
     },
     2: {
         title: "Rate Law & Order",
         items: [
-            "<strong>Visual:</strong> A graph of Rate vs. [A] is horizontal for zero-order, a straight sloped line for first-order, and a steep curve for second-order.",
+            "<strong>Visual:</strong> A graph of Rate vs. [A] is horizontal for <span class='term'>zero-order</span>, a straight sloped line for <span class='term'>first-order</span>, and a steep curve for <span class='term'>second-order</span>.",
             "<strong>Analogy:</strong> Reaction order is like knowing how much adding more of one ingredient (a reactant) will speed up the whole recipe (the reaction rate).",
             "<strong>Cause:</strong> The exponents in the rate law (x and y) dictate how sensitive the reaction rate is to changes in the concentration of each reactant.",
-            "<strong>Model:</strong> Rate = k[A]ˣ[B]ʸ. The overall order is the sum of the exponents (x + y).",
-            "<strong>Fix:</strong> The order of a reaction is NOT determined by the stoichiometric coefficients in the balanced equation. It must be found experimentally."
+            "<strong>Model:</strong> Rate = <span class='equation'>k[A]ˣ[B]ʸ</span>. The overall <span class='term'>order</span> is the sum of the exponents (x + y).",
+            "<strong>Fix:</strong> <span class='misconception'>The order of a reaction is NOT determined by the stoichiometric coefficients</span> in the balanced equation. It must be found experimentally."
         ]
     },
     3: {
         title: "Integrated Rate Laws",
         items: [
-            "<strong>Visual:</strong> For a zero-order reaction, a plot of [R] vs. time is a straight line. For a first-order reaction, a plot of ln[R] vs. time is a straight line.",
-            "<strong>Analogy:</strong> First-order half-life is like repeatedly cutting a chocolate bar in half. Each cut takes the same amount of time, but the amount you remove gets smaller.",
+            "<strong>Visual:</strong> For a zero-order reaction, a plot of <span class='equation'>[R] vs. time</span> is a straight line. For a first-order reaction, a plot of <span class='equation'>ln[R] vs. time</span> is a straight line.",
+            "<strong>Analogy:</strong> First-order <span class='term'>half-life</span> is like repeatedly cutting a chocolate bar in half. Each cut takes the same amount of time, but the amount you remove gets smaller.",
             "<strong>Cause:</strong> The constant half-life in a first-order reaction means the time it takes for the concentration to halve is independent of the initial amount.",
-            "<strong>Model:</strong> Zero-order: [R] = [R]₀ – kt. First-order: ln[R] = ln[R]₀ – kt.",
-            "<strong>Fix:</strong> Half-life is NOT constant for all reaction orders. For a zero-order reaction, the half-life decreases as the initial concentration decreases."
+            "<strong>Model:</strong> Zero-order: <span class='equation'>[R] = [R]₀ – kt</span>. First-order: <span class='equation'>ln[R] = ln[R]₀ – kt</span>.",
+            "<strong>Fix:</strong> <span class='misconception'>Half-life is NOT constant for all reaction orders.</span> For a zero-order reaction, the half-life decreases as the initial concentration decreases."
         ]
     },
     4: {
         title: "Temperature & Activation Energy",
         items: [
-            "<strong>Visual:</strong> An energy profile diagram shows the activation energy (Ea) as a barrier. A catalyst provides an alternative pathway with a lower Ea barrier.",
+            "<strong>Visual:</strong> An energy profile diagram shows the <span class='term'>activation energy (Ea)</span> as a barrier. A <span class='term'>catalyst</span> provides an alternative pathway with a lower Ea barrier.",
             "<strong>Analogy:</strong> Activation energy is like needing to push a boulder up a small hill before it can roll down the other side. A catalyst is like finding a lower pass through the hill.",
             "<strong>Cause:</strong> Increasing temperature gives more molecules enough kinetic energy to overcome the Ea barrier. A catalyst lowers the barrier itself.",
-            "<strong>Model:</strong> Arrhenius Equation: k = A * e^(-Ea/RT). Taking the natural log gives ln(k) = ln(A) - Ea/RT, which is the equation of a straight line (y = c + mx).",
-            "<strong>Fix:</strong> A catalyst does not get used up in the reaction and does not change the overall enthalpy (ΔH) of the reaction—it only changes the rate."
+            "<strong>Model:</strong> Arrhenius Equation: <span class='equation'>k = A * e^(-Ea/RT)</span>. Taking the natural log gives a linear equation.",
+            "<strong>Fix:</strong> <span class='misconception'>A catalyst does not get used up in the reaction</span> and does not change the overall enthalpy (ΔH)—it only changes the rate."
         ]
     },
      5: {
         title: "Collision Theory",
         items: [
-            "<strong>Visual:</strong> The micro view shows particles in constant, random motion. Only collisions with sufficient energy AND correct orientation result in a reaction.",
-            "<strong>Analogy:</strong> A successful reaction is like a key fitting into a lock. It's not enough for the key (molecule A) to just bump into the lock (molecule B); it must hit at the right angle and with enough force.",
-            "<strong>Cause:</strong> The rate depends on the collision frequency (Z), the fraction of molecules with E ≥ Ea, and the steric factor (P) representing the orientation requirement.",
-            "<strong>Model:</strong> Rate = Z_AB * P * e^(-Ea/RT). This combines the concepts of collision, orientation, and energy.",
-            "<strong>Fix:</strong> Don't assume every collision between reactant particles leads to a product. The vast majority of collisions are ineffective."
+            "<strong>Visual:</strong> The micro view shows particles in constant, random motion. Only collisions with sufficient <span class='term'>energy</span> AND correct <span class='term'>orientation</span> result in a reaction.",
+            "<strong>Analogy:</strong> A successful reaction is like a key fitting into a lock. It must hit at the right angle and with enough force.",
+            "<strong>Cause:</strong> The rate depends on the <span class='term'>collision frequency (Z)</span>, the fraction of molecules with E ≥ Ea, and the <span class='term'>steric factor (P)</span>.",
+            "<strong>Model:</strong> Rate = <span class='equation'>Z_AB * P * e^(-Ea/RT)</span>. This combines the concepts of collision, orientation, and energy.",
+            "<strong>Fix:</strong> <span class='misconception'>Don't assume every collision between reactant particles leads to a product.</span> The vast majority of collisions are ineffective."
         ]
     }
 };
@@ -120,7 +120,7 @@ function setupTabs() {
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const sceneNum = tab.dataset.scene;
-            
+
             // Stop animation if leaving scene 5
             if (s5AnimationId && document.querySelector('#scene-5').classList.contains('active')) {
                 cancelAnimationFrame(s5AnimationId);
@@ -134,7 +134,7 @@ function setupTabs() {
                 scene.classList.remove('active');
             });
             document.getElementById(`scene-${sceneNum}`).classList.add('active');
-            
+
             // Load dynamic content
             loadContentForScene(sceneNum);
 
@@ -151,7 +151,7 @@ function setupTabs() {
 function loadContentForScene(sceneNum) {
     const mstPanel = document.getElementById(`mst-panel-s${sceneNum}`);
     const labPanel = document.getElementById(`lab-challenges-s${sceneNum}`);
-    
+
     // MST Content
     const mstData = mstContent[sceneNum];
     if (mstData) {
@@ -167,14 +167,100 @@ function loadContentForScene(sceneNum) {
     const labData = labChallenges[sceneNum];
     if (labData) {
         let labHtml = `<h3>${labData.title}</h3>`;
-        labData.items.forEach(item => {
+        labData.items.forEach((item, index) => {
             let tagsHtml = (item.tags || []).map(tag => `<span class="nep-tag">${tag}</span>`).join(' ');
-            labHtml += `<div class="lab-challenge-item challenge-${item.type}"><strong>${item.type.toUpperCase()}:</strong> ${item.text} ${tagsHtml}</div>`;
+            labHtml += `<div class="lab-challenge-item challenge-${item.type}" data-scene="${sceneNum}" data-index="${index}" style="cursor: pointer;" title="Click to set up this experiment"><strong>${item.type.toUpperCase()}:</strong> ${item.text} ${tagsHtml}</div>`;
         });
         labPanel.innerHTML = labHtml;
+
+        // Add a single event listener to the panel for delegation
+        labPanel.onclick = function(event) {
+            const challengeEl = event.target.closest('.lab-challenge-item');
+            if (challengeEl) {
+                const scene = challengeEl.dataset.scene;
+                const index = challengeEl.dataset.index;
+                handleChallengeClick(scene, index);
+            }
+        };
     }
 }
 
+function handleChallengeClick(sceneNum, challengeIndex) {
+    switch(String(sceneNum)) {
+        case '1':
+            handleScene1Challenge(challengeIndex);
+            break;
+        case '2':
+            handleScene2Challenge(challengeIndex);
+            break;
+        case '3':
+            handleScene3Challenge(challengeIndex);
+            break;
+        case '4':
+            handleScene4Challenge(challengeIndex);
+            break;
+        case '5':
+            handleScene5Challenge(challengeIndex);
+            break;
+    }
+}
+
+function handleScene1Challenge(index) {
+    if (index == 1) { // Analyze rate between t=10s and t=30s
+        document.getElementById('s1-mode-avg').checked = true;
+
+        const points = concTimeChart.data.datasets[1].data;
+        const data = concTimeChart.data.datasets[0].data;
+
+        points[0].x = 10;
+        points[0].y = data[10];
+        points[1].x = 30;
+        points[1].y = data[30];
+
+        concTimeChart.update();
+        updateScene1Rates();
+
+        // Also trigger the mode change handler to update instructions
+        document.getElementById('s1-mode-avg').dispatchEvent(new Event('click'));
+    }
+}
+
+function handleScene2Challenge(index) {
+    if (index == 0) { // Experiment: create similar rates
+        // Set a baseline condition
+        document.getElementById('s2-conc-a').value = 1.5;
+        document.getElementById('s2-order-a').value = 2;
+        document.getElementById('s2-conc-b').value = 1.0;
+        document.getElementById('s2-order-b').value = 1;
+        document.getElementById('s2-conc-a').dispatchEvent(new Event('input'));
+    } else if (index == 1) { // Challenge: pseudo first order
+        document.getElementById('s2-pseudo-order-toggle').checked = true;
+        document.getElementById('s2-pseudo-order-toggle').dispatchEvent(new Event('input'));
+    }
+}
+
+function handleScene3Challenge(index) {
+    if (index == 0) { // Compare zero vs first order
+        document.getElementById('s3-zero-order').checked = true;
+        document.getElementById('s3-initial-conc').value = 1.5;
+        document.getElementById('s3-rate-constant').value = 0.1;
+        document.getElementById('s3-zero-order').dispatchEvent(new Event('input'));
+    }
+}
+
+function handleScene4Challenge(index) {
+    if (index == 0) { // Observe temp vs catalyst
+        document.getElementById('s4-temperature').value = 60; // High temp
+        document.getElementById('s4-temperature').dispatchEvent(new Event('input'));
+    }
+}
+
+function handleScene5Challenge(index) {
+     if (index == 0) { // Compare low vs high temp collisions
+        document.getElementById('s5-temperature').value = 353; // High temp
+        document.getElementById('s5-temperature').dispatchEvent(new Event('input'));
+    }
+}
 
 // --- SCENE INITIALIZATION --- //
 
@@ -230,11 +316,11 @@ function initScene1() {
             }
         }
     });
-    
+
     function setMode() {
         const isAverageMode = avgModeRadio.checked;
         const points = concTimeChart.data.datasets[1].data;
-        
+
         if (isAverageMode) {
             if (points.length === 1) { // switching from inst to avg
                 points.push({ x: points[0].x + 20, y: data[Math.min(50, Math.round(points[0].x) + 20)] });
@@ -252,7 +338,7 @@ function initScene1() {
 
     avgModeRadio.addEventListener('click', setMode);
     instModeRadio.addEventListener('click', setMode);
-    
+
     setMode(); // Initial setup
 }
 
@@ -265,13 +351,20 @@ function updateScene1Rates() {
     const k = 0.05;
     const initialConc = 1.0;
 
+    // Update gauge based on the average time of the measurement handles
+    const avgTime = (points[0].x + (points.length > 1 ? points[1].x : points[0].x)) / 2;
+    const currentConc = initialConc * Math.exp(-k * avgTime);
+    const progress = (1 - (currentConc / initialConc)) * 100;
+    document.getElementById('s1-gauge-fill').style.transform = `rotate(${progress * 1.8}deg)`;
+    document.getElementById('s1-gauge-label').textContent = `${Math.round(progress)}%`;
+
     if (isAverageMode && points.length === 2) {
         const dx = points[1].x - points[0].x;
         // Snap points to the curve
         points[0].y = initialConc * Math.exp(-k * points[0].x);
         points[1].y = initialConc * Math.exp(-k * points[1].x);
         const dy = points[1].y - points[0].y;
-        
+
         const avgRate = dx !== 0 ? -dy / dx : 0;
         avgRateOutput.textContent = avgRate.toFixed(4);
         instRateOutput.textContent = "-";
@@ -282,7 +375,7 @@ function updateScene1Rates() {
         points[0].y = initialConc * Math.exp(-k * time);
         const currentConc = points[0].y;
         const instRate = k * currentConc;
-        
+
         instRateOutput.textContent = instRate.toFixed(4);
         avgRateOutput.textContent = "-";
         concTimeChart.update('none');
@@ -306,8 +399,32 @@ function initScene2() {
         rate: document.getElementById('s2-rate-output'),
         rateLaw: document.getElementById('s2-rate-law-display'),
     };
-    
+
     const k = 0.2; // Arbitrary rate constant for this scene
+
+    const ctx = document.getElementById('rateConcChart').getContext('2d');
+    rateConcChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Rate vs. [A]',
+                data: [],
+                borderColor: 'var(--accent-color-dark)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            animation: {
+                duration: 400,
+                easing: 'linear'
+            },
+            scales: {
+                x: { title: { display: true, text: 'Concentration [A] (mol/L)' }, min: 0, max: 2.0 },
+                y: { title: { display: true, text: 'Initial Rate (mol L⁻¹ s⁻¹)' }, min: 0 }
+            }
+        }
+    });
 
     function updateRate() {
         const isPseudo = controls.pseudoToggle.checked;
@@ -334,7 +451,7 @@ function initScene2() {
         outputs.orderA.textContent = orderA;
         outputs.orderB.textContent = orderB;
         outputs.rate.textContent = baseRate.toFixed(3);
-        
+
         if(isPseudo) {
             const k_prime = k * Math.pow(concB, orderB);
             outputs.rateLaw.innerHTML = `Rate = k'[A]<sup>${orderA}</sup> (where k' = k[B]<sup>${orderB}</sup> = ${k_prime.toFixed(2)})`;
@@ -344,8 +461,20 @@ function initScene2() {
 
         // Update rate table
         updateRateTable(baseRate, concA, orderA, concB, orderB);
+
+        // Update the graph
+        updateRateConcChart(orderA, concB, orderB, k);
     }
-    
+
+    function updateRateConcChart(orderA, concB, orderB, k) {
+        const concARange = Array.from({ length: 21 }, (_, i) => i * 0.1); // 0 to 2.0
+        const rateData = concARange.map(concA => k * Math.pow(concA, orderA) * Math.pow(concB, orderB));
+
+        rateConcChart.data.labels = concARange;
+        rateConcChart.data.datasets[0].data = rateData;
+        rateConcChart.update();
+    }
+
     function updateRateTable(baseRate, concA, orderA, concB, orderB) {
         // Double A
         const rate2A = k * Math.pow(concA * 2, orderA) * Math.pow(concB, orderB);
@@ -378,11 +507,15 @@ function initScene3() {
         initialConc: document.getElementById('s3-initial-conc'),
         rateConstant: document.getElementById('s3-rate-constant'),
     };
-    
+
     integratedRateChart = new Chart(ctx, {
         type: 'line',
         data: { labels: [], datasets: [] },
         options: {
+            animation: {
+                duration: 500,
+                easing: 'easeInOutQuad'
+            },
             scales: {
                 x: { title: { display: true, text: 'Time (s)' } },
                 y: { title: { display: true, text: 'Concentration or ln[R]' } }
@@ -394,13 +527,13 @@ function initScene3() {
         const r0 = parseFloat(controls.initialConc.value);
         const k = parseFloat(controls.rateConstant.value);
         const isZeroOrder = controls.zeroOrder.checked;
-        
+
         document.getElementById('s3-initial-conc-value').textContent = r0.toFixed(1);
         document.getElementById('s3-rate-constant-value').textContent = k.toFixed(2);
-        
+
         let labels = Array.from({ length: 51 }, (_, i) => i);
         let data, halfLife, kUnit;
-        
+
         if (isZeroOrder) {
             data = labels.map(t => Math.max(0, r0 - k * t));
             halfLife = r0 / (2 * k);
@@ -421,11 +554,11 @@ function initScene3() {
             pointRadius: 0
         }];
         integratedRateChart.update();
-        
+
         document.getElementById('s3-half-life-output').textContent = halfLife.toFixed(2);
         document.getElementById('s3-k-output').textContent = `${k.toFixed(2)} ${kUnit}`;
     }
-    
+
     Object.values(controls).forEach(control => control.addEventListener('input', updatePlot));
     updatePlot();
 }
@@ -435,7 +568,7 @@ function initScene3() {
 function initScene4() {
     const tempSlider = document.getElementById('s4-temperature');
     const catalystBtn = document.getElementById('s4-catalyst-toggle');
-    
+
     const A = 1e10; // Pre-exponential factor
     const R = 8.314e-3; // Gas constant in kJ/mol·K
     let Ea = 50; // Initial Activation Energy in kJ/mol
@@ -448,20 +581,32 @@ function initScene4() {
             labels: ['Reactants', 'Transition State', 'Products'],
             datasets: []
         },
-        options: { scales: { y: { title: { display: true, text: 'Potential Energy (kJ)' } } } }
+        options: {
+            animation: { duration: 800, easing: 'easeOutBounce' },
+            scales: { y: { title: { display: true, text: 'Potential Energy (kJ)' } } }
+        }
     });
-    
+
     const arrheniusCtx = document.getElementById('arrheniusChart').getContext('2d');
     arrheniusChart = new Chart(arrheniusCtx, {
         type: 'line',
         data: { datasets: [] },
-        options: { scales: { x: { title: { display: true, text: '1/T (K⁻¹)' } }, y: { title: { display: true, text: 'ln(k)' } } } }
+        options: {
+            animation: { duration: 500 },
+            scales: { x: { title: { display: true, text: '1/T (K⁻¹)' } }, y: { title: { display: true, text: 'ln(k)' } } }
+        }
     });
 
     function updateScene4() {
         const tempC = parseInt(tempSlider.value);
         const tempK = tempC + 273.15;
         document.getElementById('s4-temperature-value').textContent = tempC;
+
+        // Update thermometer visual
+        const tempMin = parseInt(tempSlider.min);
+        const tempMax = parseInt(tempSlider.max);
+        const tempPercent = (tempC - tempMin) / (tempMax - tempMin);
+        document.getElementById('s4-thermometer-level').style.height = `${tempPercent * 100}%`;
 
         const k = A * Math.exp(-Ea / (R * tempK));
         document.getElementById('s4-k-output').textContent = k.toExponential(2);
@@ -475,7 +620,7 @@ function initScene4() {
             tension: 0.4
         }];
         energyProfileChart.update();
-        
+
         // Update Arrhenius Plot
         const tempRange = Array.from({length: 8}, (_, i) => 283 + i * 10); // 283K to 353K
         const arrheniusData = tempRange.map(T => ({
@@ -490,7 +635,7 @@ function initScene4() {
         }];
         arrheniusChart.update();
     }
-    
+
     catalystBtn.addEventListener('click', () => {
         isCatalyzed = !isCatalyzed;
         Ea = isCatalyzed ? 30 : 50; // Lower Ea with catalyst
@@ -511,12 +656,12 @@ function initScene5() {
     const modal = document.getElementById('rds-modal');
     const openBtn = document.getElementById('rds-popup-btn');
     const closeBtn = modal.querySelector('.modal-close-btn');
-    
+
     // Set canvas size
     const container = canvas.parentElement;
     canvas.width = container.clientWidth;
     canvas.height = container.clientHeight > 250 ? container.clientHeight : 250;
-    
+
     // Modal logic
     openBtn.addEventListener('click', () => modal.style.display = 'flex');
     closeBtn.addEventListener('click', () => modal.style.display = 'none');
@@ -542,7 +687,7 @@ function setupScene5Animation(ctx) {
     const canvas = ctx.canvas;
     const effectiveCollisionsEl = document.getElementById('s5-effective-collisions');
     const totalCollisionsEl = document.getElementById('s5-total-collisions');
-    
+
     let effectiveCollisions = 0;
     let totalCollisions = 0;
 
@@ -560,21 +705,33 @@ function setupScene5Animation(ctx) {
                 color: 'var(--text-color-light)'
             });
         }
+        updateParticleSpeed();
     }
 
     function updateParticleSpeed() {
         const tempK = parseFloat(controls.temperature.value);
         document.getElementById('s5-temperature-value').textContent = tempK;
+
+        // Update thermometer visual
+        const tempMin = parseInt(controls.temperature.min);
+        const tempMax = parseInt(controls.temperature.max);
+        const tempPercent = (tempK - tempMin) / (tempMax - tempMin);
+        document.getElementById('s5-thermometer-level').style.height = `${tempPercent * 100}%`;
+
         const speedFactor = Math.sqrt(tempK / 298); // Proportional to sqrt(T)
         particles.forEach(p => {
-            p.vx *= speedFactor;
-            p.vy *= speedFactor;
+            // This is a simplified model; in reality, we'd re-sample from Maxwell-Boltzmann
+            const currentSpeed = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
+            if(currentSpeed > 0) {
+                 p.vx = (p.vx / currentSpeed) * 2 * speedFactor;
+                 p.vy = (p.vy / currentSpeed) * 2 * speedFactor;
+            }
         });
     }
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         particles.forEach((p, i) => {
             // Move particle
             p.x += p.vx;
@@ -622,15 +779,15 @@ function setupScene5Animation(ctx) {
                 setTimeout(() => { p.color = 'var(--text-color-light)'}, 200);
             }
         });
-        
+
         totalCollisionsEl.textContent = totalCollisions;
         effectiveCollisionsEl.textContent = effectiveCollisions;
         s5AnimationId = requestAnimationFrame(animate);
     }
-    
+
     controls.concentration.addEventListener('input', createParticles);
     controls.temperature.addEventListener('input', updateParticleSpeed);
-    
+
     createParticles();
     animate();
 }

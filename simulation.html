@@ -1,6 +1,222 @@
-<!-- simulation.html -->
-<!-- Template: Add your simulation markup inside .sim-root -->
+<!--
+  simulation.html
+  Tarcin Modular Simulation Engine
+  Chemical Kinetics: Rate, Order, Mechanism & Temperature Dependence
+-->
 
-<div data-sim-root id="sim-root" class="sim-root">
-  <!-- Add simulation content here -->
+<!-- Dependencies: Chart.js for graphing -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata"></script>
+
+<div id="simulation-container">
+  <!-- HOOKED ON CONCEPT BANNER -->
+  <div id="hook-banner" class="panel">
+    <p><strong>Hooked on Concept:</strong> The speed of a reaction depends on how often and how effectively reacting particles collide, and on the energy barrier they must cross.</p>
+  </div>
+
+  <!-- SCENE TABS -->
+  <div id="scene-tabs">
+    <button class="tab-btn active" data-scene="1">Measuring Rate</button>
+    <button class="tab-btn" data-scene="2">Rate Law & Order</button>
+    <button class="tab-btn" data-scene="3">Integrated Rate Laws</button>
+    <button class="tab-btn" data-scene="4">Temperature & Catalyst</button>
+    <button class="tab-btn" data-scene="5">Collision Theory</button>
+  </div>
+
+  <!-- SCENES CONTAINER -->
+  <div id="scenes">
+    <!-- SCENE 1: Measuring Reaction Rate -->
+    <div id="scene-1" class="scene active">
+      <div class="scene-layout">
+        <div id="main-simulation-s1" class="panel main-simulation">
+          <h2>Main Simulation: Concentration vs. Time</h2>
+          <canvas id="concTimeChart"></canvas>
+          <div id="s1-readout" class="readout-panel">
+             <p><strong>Average Rate:</strong> <span id="avg-rate-output">-</span> mol L⁻¹ s⁻¹</p>
+             <p><strong>Instantaneous Rate:</strong> <span id="inst-rate-output">-</span> mol L⁻¹ s⁻¹</p>
+          </div>
+        </div>
+        <div id="control-panel-s1" class="panel control-panel">
+          <h3>Controls</h3>
+          <label>Measurement Mode:</label>
+          <div>
+            <input type="radio" id="s1-mode-avg" name="s1-mode" value="average" checked>
+            <label for="s1-mode-avg">Average Rate (Secant)</label>
+          </div>
+          <div>
+            <input type="radio" id="s1-mode-inst" name="s1-mode" value="instantaneous">
+            <label for="s1-mode-inst">Instantaneous Rate (Tangent)</label>
+          </div>
+          <p id="s1-instructions">Drag the two handles on the graph to measure the average rate between two points.</p>
+        </div>
+        <div id="mst-panel-s1" class="panel mst-panel">
+          <!-- Multi-Style Thinking Content is dynamically loaded -->
+        </div>
+        <div id="lab-challenges-s1" class="panel lab-challenges">
+          <!-- Lab Challenges Content is dynamically loaded -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENE 2: Rate Law, Order & Molecularity -->
+    <div id="scene-2" class="scene">
+      <div class="scene-layout">
+        <div id="main-simulation-s2" class="panel main-simulation">
+          <h2>Main Simulation: Rate vs. Concentration</h2>
+          <canvas id="rateConcChart"></canvas>
+          <div id="s2-readout" class="readout-panel">
+            <p><strong>Rate Law:</strong> <span id="s2-rate-law-display">Rate = k[A]<sup id="s2-order-a-display">x</sup>[B]<sup id="s2-order-b-display">y</sup></span></p>
+            <p><strong>Calculated Rate:</strong> <span id="s2-rate-output">-</span> mol L⁻¹ s⁻¹</p>
+          </div>
+          <div id="s2-table-container">
+            <h4>How Rate Changes with Concentration</h4>
+            <table id="s2-rate-table">
+              <thead>
+                <tr>
+                  <th>Condition</th>
+                  <th>New Rate (mol L⁻¹ s⁻¹)</th>
+                  <th>Change Factor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Double [A]</td><td id="s2-rate-double-a"></td><td id="s2-factor-double-a"></td></tr>
+                <tr><td>Triple [A]</td><td id="s2-rate-triple-a"></td><td id="s2-factor-triple-a"></td></tr>
+                <tr><td>Double [B]</td><td id="s2-rate-double-b"></td><td id="s2-factor-double-b"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="control-panel-s2" class="panel control-panel">
+          <h3>Controls</h3>
+          <div>
+            <input type="checkbox" id="s2-pseudo-order-toggle">
+            <label for="s2-pseudo-order-toggle">Simulate Pseudo First-Order</label>
+          </div>
+          <hr>
+          <label for="s2-conc-a">Concentration [A] (mol/L):</label>
+          <input type="range" id="s2-conc-a" min="0.1" max="2.0" value="1.0" step="0.1">
+          <span id="s2-conc-a-value">1.0</span>
+          <label for="s2-order-a">Order of A:</label>
+          <select id="s2-order-a">
+            <option value="0">0</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+          </select>
+          <br><br>
+          <label for="s2-conc-b">Concentration [B] (mol/L):</label>
+          <input type="range" id="s2-conc-b" min="0.1" max="2.0" value="1.0" step="0.1">
+          <span id="s2-conc-b-value">1.0</span>
+          <label for="s2-order-b">Order of B:</label>
+          <select id="s2-order-b">
+            <option value="0" selected>0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+        <div id="mst-panel-s2" class="panel mst-panel"></div>
+        <div id="lab-challenges-s2" class="panel lab-challenges"></div>
+      </div>
+    </div>
+
+    <!-- SCENE 3: Integrated Rate Laws -->
+    <div id="scene-3" class="scene">
+        <div class="scene-layout">
+            <div id="main-simulation-s3" class="panel main-simulation">
+                <h2>Main Simulation: Integrated Rate Law Plots</h2>
+                <canvas id="integratedRateChart"></canvas>
+                <div id="s3-readout" class="readout-panel">
+                    <p><strong>Half-Life (t½):</strong> <span id="s3-half-life-output">-</span> s</p>
+                    <p><strong>Rate Constant (k):</strong> <span id="s3-k-output">-</span></p>
+                </div>
+            </div>
+            <div id="control-panel-s3" class="panel control-panel">
+                <h3>Controls</h3>
+                <label>Reaction Order:</label>
+                <input type="radio" id="s3-zero-order" name="order" value="0" checked> Zero
+                <input type="radio" id="s3-first-order" name="order" value="1"> First
+                <br><br>
+                <label for="s3-initial-conc">Initial Conc. [R]₀:</label>
+                <input type="range" id="s3-initial-conc" min="0.5" max="2.0" value="1.0" step="0.1">
+                <span id="s3-initial-conc-value">1.0</span>
+                <br><br>
+                <label for="s3-rate-constant">Rate Constant (k):</label>
+                <input type="range" id="s3-rate-constant" min="0.01" max="0.5" value="0.1" step="0.01">
+                <span id="s3-rate-constant-value">0.1</span>
+            </div>
+            <div id="mst-panel-s3" class="panel mst-panel"></div>
+            <div id="lab-challenges-s3" class="panel lab-challenges"></div>
+        </div>
+    </div>
+
+
+    <!-- SCENE 4: Temperature & Catalyst -->
+    <div id="scene-4" class="scene">
+        <div class="scene-layout">
+            <div id="main-simulation-s4" class="panel main-simulation dual-view">
+                 <div class="half-panel">
+                    <h2>Energy Profile</h2>
+                    <canvas id="energyProfileChart"></canvas>
+                 </div>
+                 <div class="half-panel">
+                    <h2>Arrhenius Plot (ln k vs 1/T)</h2>
+                    <canvas id="arrheniusChart"></canvas>
+                 </div>
+                 <div id="s4-readout" class="readout-panel">
+                     <p><strong>Rate Constant (k):</strong> <span id="s4-k-output">-</span></p>
+                     <p><strong>Activation Energy (Ea):</strong> <span id="s4-ea-output">50</span> kJ/mol</p>
+                 </div>
+            </div>
+            <div id="control-panel-s4" class="panel control-panel">
+                <h3>Controls</h3>
+                <label for="s4-temperature">Temperature (°C):</label>
+                <input type="range" id="s4-temperature" min="10" max="80" value="25" step="1">
+                <span id="s4-temperature-value">25</span> °C
+                <br><br>
+                <label for="s4-catalyst">Catalyst:</label>
+                <button id="s4-catalyst-toggle">Add Catalyst</button>
+            </div>
+            <div id="mst-panel-s4" class="panel mst-panel"></div>
+            <div id="lab-challenges-s4" class="panel lab-challenges"></div>
+        </div>
+    </div>
+
+    <!-- SCENE 5: Collision Theory -->
+    <div id="scene-5" class="scene">
+        <div class="scene-layout">
+            <div id="main-simulation-s5" class="panel main-simulation">
+                <h2>Micro View: Particle Collisions</h2>
+                <canvas id="collisionCanvas"></canvas>
+                <div id="s5-readout" class="readout-panel">
+                    <p><strong>Effective Collisions:</strong> <span id="s5-effective-collisions">0</span></p>
+                    <p><strong>Total Collisions:</strong> <span id="s5-total-collisions">0</span></p>
+                </div>
+            </div>
+            <div id="control-panel-s5" class="panel control-panel">
+                <h3>Controls</h3>
+                <label for="s5-concentration">Concentration:</label>
+                <input type="range" id="s5-concentration" min="10" max="50" value="20" step="5">
+                <span id="s5-concentration-value">20</span> particles
+                <br><br>
+                <label for="s5-temperature">Temperature:</label>
+                <input type="range" id="s5-temperature" min="283" max="353" value="298" step="10">
+                <span id="s5-temperature-value">298</span> K
+                <br><br>
+                <button id="rds-popup-btn">Explain Rate-Determining Step</button>
+            </div>
+            <div id="mst-panel-s5" class="panel mst-panel"></div>
+            <div id="lab-challenges-s5" class="panel lab-challenges"></div>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for Rate-Determining Step -->
+<div id="rds-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <button class="modal-close-btn">&times;</button>
+    <h4>Analogy: The Slowest Toll Gate</h4>
+    <p>A reaction with multiple steps is like a highway with several toll gates. The total time it takes to get through depends almost entirely on the slowest, most congested toll gate. This slowest step is the "Rate-Determining Step" (RDS).</p>
+    <p>Even if you speed through all other gates, you're still limited by the bottleneck. Similarly, the overall reaction rate is dictated by the rate of the slowest elementary step in the mechanism.</p>
+  </div>
 </div>

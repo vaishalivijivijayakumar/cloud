@@ -1,12 +1,195 @@
-/* simulation.css
-   Template styles for simulations
-   - Expects CSS variables from base-template.html
-   - Add simulation-specific styles below
-*/
+/* simulation.css */
 
-.sim-root {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-  color: var(--color-text);
+/* Main Layout */
+.sim-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.challenge-notification {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s, top 0.3s;
+    pointer-events: none;
+}
+
+.challenge-notification.show {
+    opacity: 1;
+    top: 20px;
+}
+
+.panel-header {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+}
+
+.hooked-on-concept {
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 12px;
+    padding: 8px;
+    background-color: rgba(0, 120, 255, 0.05);
+    border-radius: 8px;
+}
+
+.scene-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.scene-tab {
+    padding: 8px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.scene-tab.active, .scene-tab:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Panel Styling */
+.panel-micro-view, .panel-control-panel, .panel-mst, .panel-lab-challenges {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.panel-micro-view {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Control Panel */
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sim-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+/* MST Panel */
+.mst-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mst-tab {
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mst-tab.active, .mst-tab:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+.mst-content {
+    min-height: 150px;
+}
+
+/* Lab Challenges */
+.challenge-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.challenge-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: var(--color-background);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.challenge-item:hover {
+    background-color: rgba(0, 120, 255, 0.1);
+}
+
+.challenge-item p {
+    margin: 0;
+}
+
+[class^="challenge-color-"] {
+    width: 8px;
+    height: 100%;
+    min-height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.challenge-color-observe { background-color: #3b82f6; }
+.challenge-color-compare { background-color: #8b5cf6; }
+.challenge-color-experiment { background-color: #22c55e; }
+.challenge-color-analyze { background-color: #f97316; }
+.challenge-color-challenge { background-color: #ef4444; }
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
 }

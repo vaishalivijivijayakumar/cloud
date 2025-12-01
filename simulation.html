@@ -1,6 +1,103 @@
-<!-- simulation.html -->
-<!-- Template: Add your simulation markup inside .sim-root -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="sim-container">
+    <div id="challenge-notification" class="challenge-notification"></div>
+    <!-- Header: Scene Tabs -->
+    <div class="panel-header">
+        <div class="hooked-on-concept">
+            <p><strong>Hooked on Concept:</strong> The speed of a reaction depends on how often and how effectively reacting particles collide, and on the energy barrier they must cross.</p>
+        </div>
+        <div class="scene-tabs">
+            <button class="scene-tab active" data-scene="1">Rate of Reaction</button>
+            <button class="scene-tab" data-scene="2">Rate Law & Order</button>
+            <button class="scene-tab" data-scene="3">Integrated Rate Laws</button>
+            <button class="scene-tab" data-scene="4">Temperature & Catalyst</button>
+            <button class="scene-tab" data-scene="5">Collision Theory</button>
+        </div>
+    </div>
 
-<div data-sim-root id="sim-root" class="sim-root">
-  <!-- Add simulation content here -->
+    <!-- Main Content Grid -->
+    <div class="main-grid">
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="panel-micro-view">
+                <div class="simulation-area" id="simulation-area">
+                    <!-- Scene content will be dynamically injected here -->
+                </div>
+            </div>
+            <div class="panel-control-panel">
+                 <div class="controls-grid">
+                    <!-- Concentration -->
+                    <div class="control-group" data-controls-for="1 2 3">
+                        <label for="concentration-slider">Initial [R] (mol/L)</label>
+                        <input type="range" id="concentration-slider" min="0.1" max="2" step="0.1" value="1.0">
+                        <span id="concentration-value">1.0</span>
+                    </div>
+                    <!-- Temperature -->
+                    <div class="control-group" data-controls-for="4 5">
+                        <label for="temperature-slider">Temperature (K)</label>
+                        <input type="range" id="temperature-slider" min="273" max="373" step="1" value="298">
+                        <span id="temperature-value">298</span>
+                    </div>
+                    <!-- Order -->
+                    <div class="control-group" data-controls-for="2 3">
+                        <label for="order-select">Reaction Order</label>
+                        <select id="order-select">
+                            <option value="0">Zero Order</option>
+                            <option value="1">First Order</option>
+                            <option value="2">Second Order</option>
+                        </select>
+                    </div>
+                     <!-- Catalyst -->
+                    <div class="control-group" data-controls-for="4 5">
+                        <label for="catalyst-toggle">Catalyst</label>
+                        <input type="checkbox" id="catalyst-toggle">
+                    </div>
+                </div>
+                <div class="sim-actions">
+                    <button id="play-pause-btn">Play</button>
+                    <button id="reset-btn">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <div class="panel-mst">
+                <div class="mst-tabs">
+                    <button class="mst-tab active" data-mst-tab="visual">Visual</button>
+                    <button class="mst-tab" data-mst-tab="analogy">Analogy</button>
+                    <button class="mst-tab" data-mst-tab="cause">Cause</button>
+                    <button class="mst-tab" data-mst-tab="model">Model</button>
+                    <button class="mst-tab" data-mst-tab="fix">Fix</button>
+                </div>
+                <div class="mst-content">
+                    <!-- MST content will be dynamically injected here -->
+                </div>
+            </div>
+            <div class="panel-lab-challenges">
+                <div class="challenge-grid">
+                    <div class="challenge-item" data-challenge-id="observe">
+                        <span class="challenge-color-observe"></span>
+                        <p><strong>Observe:</strong> Observe how the slope of the concentration–time graph decreases and explain why the reaction slows down.</p>
+                    </div>
+                    <div class="challenge-item" data-challenge-id="compare">
+                        <span class="challenge-color-compare"></span>
+                        <p><strong>Compare:</strong> Compare zero-order and first-order half-life plots and explain which depends on initial concentration.</p>
+                    </div>
+                     <div class="challenge-item" data-challenge-id="experiment">
+                        <span class="challenge-color-experiment"></span>
+                        <p><strong>Experiment:</strong> Create two conditions using sliders (temperature & concentration) that produce a similar rate.</p>
+                    </div>
+                    <div class="challenge-item" data-challenge-id="analyze">
+                        <span class="challenge-color-analyze"></span>
+                        <p><strong>Analyze:</strong> From a graph, determine the order, calculate k, and find the half-life.</p>
+                    </div>
+                    <div class="challenge-item" data-challenge-id="challenge">
+                        <span class="challenge-color-challenge"></span>
+                        <p><strong>Challenge:</strong> Propose a reaction mechanism and justify whether it matches the experimental rate law.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

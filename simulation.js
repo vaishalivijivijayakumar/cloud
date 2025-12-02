@@ -10,7 +10,7 @@
     R: 8.314, // Gas constant in J·mol⁻¹·K⁻¹
     DEFAULT_Ea: 75000, // Nominal Activation Energy in J·mol⁻¹
     DEFAULT_A: 1e10, // Pre-exponential factor (s⁻¹ for 1st order)
-    colors: { reactant: '#ff6b6b', product: '#48dbfb', catalyst: '#feca57', text: '#E2E8F0', grid: '#4A5568' }
+    colors: { reactant: '#ff6b6b', product: '#48dbfb', catalyst: '#feca57', text: '#2D3748', grid: '#4A5568' }
   };
 
   // --- PEDAGOGICAL CONTENT (MST & LAB CHALLENGES) ---
@@ -97,11 +97,11 @@
 
   // --- SCENE DEFINITIONS ---
   const SCENES = {
-    1: { name: "Measuring Reaction Rate", svg: `<canvas id="scene-canvas-1" width="400" height="280"></canvas>` },
-    2: { name: "Rate Law, Order & Molecularity", svg: `<canvas id="scene-canvas-2" width="400" height="280"></canvas><div id="s2-table-container"></div>` },
+    1: { name: "Measuring Reaction Rate", svg: `<canvas id="scene-canvas-1"></canvas>` },
+    2: { name: "Rate Law, Order & Molecularity", svg: `<canvas id="scene-canvas-2"></canvas><div id="s2-table-container"></div>` },
     3: { name: "Integrated Rate Laws & Half-Life", svg: `<div id="scene-3-graphs" class="dual-view" style="flex-direction: row; gap: 5px;"></div>` },
-    4: { name: "Temperature, Arrhenius Plot & Catalyst", svg: `<div class="dual-view"><div id="scene-4-pe-diagram" class="half-panel"><canvas width="200" height="200"></canvas></div><div id="scene-4-arrhenius-plot" class="half-panel"><canvas width="200" height="200"></canvas></div></div>` },
-    5: { name: "Collision Theory & Reaction Mechanism", svg: `<canvas id="scene-canvas-5" width="400" height="280"></canvas><div id="s5-counters"></div>` }
+    4: { name: "Temperature, Arrhenius Plot & Catalyst", svg: `<div class="dual-view"><div id="scene-4-pe-diagram" class="half-panel"><canvas></canvas></div><div id="scene-4-arrhenius-plot" class="half-panel"><canvas></canvas></div></div>` },
+    5: { name: "Collision Theory & Reaction Mechanism", svg: `<canvas id="scene-canvas-5"></canvas><div id="s5-counters"></div>` }
   };
 
   // --- APPLICATION STATE ---
@@ -305,15 +305,35 @@
   // --- SCENE-SPECIFIC DRAWING FUNCTIONS ---
   // A simple canvas drawing helper
   function setupCanvas(canvasId, xLabel, yLabel) {
-    makeCanvasResponsive(canvas, () => drawAll());
+    // Scene 4 has the ID on a container div, not the canvas. This handles both cases.
+    let canvas = document.getElementById(canvasId);
+    if (canvas && canvas.tagName !== 'CANVAS') {
+      canvas = canvas.querySelector('canvas');
+    }
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
 
-    const margin = { top: 15, right: 15, bottom: 40, left: 50 };
-    const width = canvas.width - margin.left - margin.right;
-    const height = canvas.height - margin.top - margin.bottom;
+    // Match canvas resolution to its display size for crisp graphics
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    // Use proportional margins to prevent clipping on smaller screens
+    const margin = {
+        top: canvas.height * 0.1,
+        right: canvas.width * 0.05,
+        bottom: canvas.height * 0.15,
+        left: canvas.width * 0.15
+    };
+    // Ensure plot dimensions are not negative
+    const width = Math.max(1, canvas.width - margin.left - margin.right);
+    const height = Math.max(1, canvas.height - margin.top - margin.bottom);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = CONFIG.colors.text;
-    ctx.font = '10px Poppins';
+
+    const fontSize = Math.max(8, Math.floor(canvas.width / 50));
+    ctx.font = `${fontSize}px Poppins`;
 
     // Draw axes
     ctx.beginPath();
@@ -325,10 +345,10 @@
 
     // Labels
     ctx.textAlign = 'center';
-    ctx.fillText(xLabel, margin.left + width / 2, canvas.height - 5);
+    ctx.fillText(xLabel, margin.left + width / 2, canvas.height - (margin.bottom / 2));
     ctx.save();
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(yLabel, -canvas.height / 2, margin.left - 35);
+    ctx.fillText(yLabel, -canvas.height / 2, margin.left / 2.5);
     ctx.restore();
 
     return { ctx, width, height, margin };
@@ -411,9 +431,9 @@
   window.drawScene3 = function() {
     const container = document.getElementById('scene-3-graphs');
     container.innerHTML = `
-      <canvas id="s3-c1" width="80" height="100"></canvas>
-      <canvas id="s3-c2" width="80" height="100"></canvas>
-      <canvas id="s3-c3" width="80" height="100"></canvas>`;
+      <canvas id="s3-c1"></canvas>
+      <canvas id="s3-c2"></canvas>
+      <canvas id="s3-c3"></canvas>`;
 
     const titles = ["[R] vs t", "ln[R] vs t", "1/[R] vs t"];
     const isLinear = [state.order === 0, state.order === 1, state.order === 2];
@@ -556,6 +576,28 @@
       <span>Effective Collisions: ${collisionCounters.effective}</span>`;
   };
 
+  // --- RESPONSIVE CANVAS ENGINE ---
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+  }
+
+  function makeCanvasResponsive() {
+      const debouncedRedraw = debounce(() => {
+          if (!state.running) {
+              updateVisuals();
+          }
+      }, 100);
+      window.addEventListener('resize', debouncedRedraw);
+  }
+
   // --- INITIALIZATION ---
   function init() {
     // Input Listeners
@@ -613,10 +655,10 @@
     });
 
     // Initial Setup
+    makeCanvasResponsive();
     renderScene();
     updateTabs();
   }
 
   init();
 })();
-// --- RESPONSIVE CANVAS ENGINE ---

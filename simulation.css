@@ -242,6 +242,34 @@
     height: 100%;
 }
 
+.dual-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 10px; /* Add a small gap between the two panels */
+}
+
+.half-panel {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0; /* Prevents flexbox overflow */
+}
+
+.half-panel canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- UI Element Hiding --- */
+.therm-readout,
+.scope-label,
+.canvas-legend {
+    display: none !important;
+}
+
 /* --- Reaction Vessel --- */
 .reaction-vessel {
     width: 80%;

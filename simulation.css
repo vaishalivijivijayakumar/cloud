@@ -1,3 +1,27 @@
+/* ADDED STYLES FOR LAYOUT CORRECTION */
+.sim-root {
+    width: 100%;
+    text-align: left;
+    /* This overrides the 'align-items: center' from the parent #simulation-panel */
+    align-self: stretch;
+}
+.sim-main {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 1rem;
+    align-items: start;
+}
+.left-pane, .right-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+canvas {
+    color: black;
+}
+/* END OF ADDED STYLES */
+
+
 /*
   simulation.css
   Tarcin Modular Simulation Engine

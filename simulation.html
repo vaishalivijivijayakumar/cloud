@@ -1,102 +1,109 @@
-<div class="sim-container">
-    <div id="challenge-notification" class="challenge-notification"></div>
-    <!-- Header: Scene Tabs -->
-    <div class="panel-header">
-        <div class="hooked-on-concept">
-            <p><strong>Hooked on Concept:</strong> The speed of a reaction depends on how often and how effectively reacting particles collide, and on the energy barrier they must cross.</p>
-        </div>
-        <div class="scene-tabs">
-            <button class="scene-tab active" data-scene="1">Rate of Reaction</button>
-            <button class="scene-tab" data-scene="2">Rate Law & Order</button>
-            <button class="scene-tab" data-scene="3">Integrated Rate Laws</button>
-            <button class="scene-tab" data-scene="4">Temperature & Catalyst</button>
-            <button class="scene-tab" data-scene="5">Collision Theory</button>
-        </div>
+<div class="sim-root" id="sim-root">
+  <header class="sim-header">
+    <h1>Chemical Kinetics: Rate, Order, Mechanism & Temperature Dependence</h1>
+    <div class="hook-banner">
+      The speed of a reaction depends on how often and how effectively reacting particles collide, and on the energy barrier they must cross.
     </div>
-
-    <!-- Main Content Grid -->
-    <div class="main-grid">
-        <!-- Left Column -->
-        <div class="left-column">
-            <div class="panel-micro-view">
-                <div class="simulation-area" id="simulation-area">
-                    <!-- Scene content will be dynamically injected here -->
-                </div>
+  </header>
+  <main class="sim-main">
+    <section class="left-pane">
+      <nav class="scene-selector" aria-label="Scene selection">
+        <button class="scene-btn active" data-scene="1"><span class="icon">📈</span> <span class="label">Measuring Rate</span></button>
+        <button class="scene-btn" data-scene="2"><span class="icon">⚖️</span> <span class="label">Rate Law</span></button>
+        <button class="scene-btn" data-scene="3"><span class="icon">⏳</span> <span class="label">Half-Life</span></button>
+        <button class="scene-btn" data-scene="4"><span class="icon">🔥</span> <span class="label">Arrhenius Plot</span></button>
+        <button class="scene-btn" data-scene="5"><span class="icon">💥</span> <span class="label">Collision Theory</span></button>
+      </nav>
+      <div class="canvas-wrapper">
+        <div id="sim-canvas" class="canvas">
+          <div id="haze-layer"></div>
+          <div id="wind-layer"></div>
+          <div id="scene-stage"></div>
+          <div id="particle-layer"></div>
+          <div class="thermometer-widget">
+            <div class="therm-glass">
+              <div class="therm-marks"><span>-</span><span>-</span><span>-</span><span>-</span><span>-</span></div>
+              <div class="therm-liquid" id="therm-liquid"></div>
             </div>
-            <div class="panel-control-panel">
-                 <div class="controls-grid">
-                    <!-- Concentration -->
-                    <div class="control-group" data-controls-for="1 2 3">
-                        <label for="concentration-slider">Initial [R] (mol/L)</label>
-                        <input type="range" id="concentration-slider" min="0.1" max="2" step="0.1" value="1.0">
-                        <span id="concentration-value">1.0</span>
-                    </div>
-                    <!-- Temperature -->
-                    <div class="control-group" data-controls-for="4 5">
-                        <label for="temperature-slider">Temperature (K)</label>
-                        <input type="range" id="temperature-slider" min="273" max="373" step="1" value="298">
-                        <span id="temperature-value">298</span>
-                    </div>
-                    <!-- Order -->
-                    <div class="control-group" data-controls-for="2 3">
-                        <label for="order-select">Reaction Order</label>
-                        <select id="order-select">
-                            <option value="0">Zero Order</option>
-                            <option value="1">First Order</option>
-                            <option value="2">Second Order</option>
-                        </select>
-                    </div>
-                     <!-- Catalyst -->
-                    <div class="control-group" data-controls-for="4 5">
-                        <label for="catalyst-toggle">Catalyst</label>
-                        <input type="checkbox" id="catalyst-toggle">
-                    </div>
-                </div>
-                <div class="sim-actions">
-                    <button id="play-pause-btn">Play</button>
-                    <button id="reset-btn">Reset</button>
-                </div>
-            </div>
+            <div class="therm-readout"><span id="therm-val">0</span>%</div>
+          </div>
+          <div class="molecule-scope">
+            <div class="scope-label">Surface Energy Indicator</div>
+            <div class="scope-lens" id="scope-lens"></div>
+          </div>
+          <div id="chill-badge" class="chill-badge" hidden>❄️ Max Rate!</div>
+          <div class="canvas-legend">
+            <div class="legend-item"><span class="dot concentration-line"></span> Concentration</div>
+            <div class="legend-item"><span class="dot rate-line"></span> Rate</div>
+          </div>
         </div>
-
-        <!-- Right Column -->
-        <div class="right-column">
-            <div class="panel-mst">
-                <div class="mst-tabs">
-                    <button class="mst-tab active" data-mst-tab="visual">Visual</button>
-                    <button class="mst-tab" data-mst-tab="analogy">Analogy</button>
-                    <button class="mst-tab" data-mst-tab="cause">Cause</button>
-                    <button class="mst-tab" data-mst-tab="model">Model</button>
-                    <button class="mst-tab" data-mst-tab="fix">Fix</button>
-                </div>
-                <div class="mst-content">
-                    <!-- MST content will be dynamically injected here -->
-                </div>
-            </div>
-            <div class="panel-lab-challenges">
-                <div class="challenge-grid">
-                    <div class="challenge-item" data-challenge-id="observe">
-                        <span class="challenge-color-observe"></span>
-                        <p><strong>Observe:</strong> Observe how the slope of the concentration–time graph decreases and explain why the reaction slows down.</p>
-                    </div>
-                    <div class="challenge-item" data-challenge-id="compare">
-                        <span class="challenge-color-compare"></span>
-                        <p><strong>Compare:</strong> Compare zero-order and first-order half-life plots and explain which depends on initial concentration.</p>
-                    </div>
-                     <div class="challenge-item" data-challenge-id="experiment">
-                        <span class="challenge-color-experiment"></span>
-                        <p><strong>Experiment:</strong> Create two conditions using sliders (temperature & concentration) that produce a similar rate.</p>
-                    </div>
-                    <div class="challenge-item" data-challenge-id="analyze">
-                        <span class="challenge-color-analyze"></span>
-                        <p><strong>Analyze:</strong> From a graph, determine the order, calculate k, and find the half-life.</p>
-                    </div>
-                    <div class="challenge-item" data-challenge-id="challenge">
-                        <span class="challenge-color-challenge"></span>
-                        <p><strong>Challenge:</strong> Propose a reaction mechanism and justify whether it matches the experimental rate law.</p>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <section class="control-panel">
+        <div class="control-grid">
+          <div class="control-group">
+            <label class="lbl-temp">Temperature (°C) (<span id="val-temp">30</span>)</label>
+            <input type="range" id="inp-temp" min="10" max="60" value="30" class="slider-temp">
+          </div>
+          <div class="control-group">
+            <label class="lbl-hum">Reaction Order (<span id="val-hum">1</span>)</label>
+            <input type="range" id="inp-humidity" min="10" max="95" value="70" class="slider-hum">
+          </div>
+          <div class="control-group">
+            <label class="lbl-wind">Catalyst Strength (<span id="val-wind">0</span>)</label>
+            <input type="range" id="inp-wind" min="0" max="5" value="0" class="slider-wind">
+          </div>
+          <div class="control-group">
+            <label class="lbl-area">Initial Conc. [R]₀ (<span id="val-area">1.0</span> M)</label>
+            <input type="range" id="inp-area" min="0.05" max="2.0" step="0.05" value="1.0" class="slider-area">
+          </div>
+          <div class="control-group full-width">
+            <label class="lbl-liquid">Reaction Type / Mechanism</label>
+            <select id="inp-liquid">
+              <option value="unimolecular" selected>Unimolecular</option>
+              <option value="bimolecular">Bimolecular</option>
+              <option value="termolecular">Termolecular (rare)</option>
+              <option value="complex">Complex (multi-step)</option>
+            </select>
+          </div>
         </div>
-    </div>
+        <div class="action-bar">
+          <div class="btn-group">
+            <button id="btn-run" class="primary-btn">Run</button>
+            <button id="btn-pause" disabled>Pause</button>
+            <button id="btn-reset">Reset</button>
+          </div>
+          <div class="readouts">
+            <div class="readout-box">
+              <span class="label">Reaction Rate (mol·L⁻¹·s⁻¹)</span>
+              <span id="out-evap" class="value pulse-target">0.00</span>
+            </div>
+            <div class="readout-box">
+              <span class="label">k / half-life</span>
+              <span id="out-cool" class="value pulse-target">0.00</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+    <aside class="right-pane">
+      <div class="tabs-section">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="visual">Visual</button>
+          <button class="tab-btn" data-tab="analogy">Analogy</button>
+          <button class="tab-btn" data-tab="cause">Cause</button>
+          <button class="tab-btn" data-tab="model">Model</button>
+          <button class="tab-btn" data-tab="fix">Fix</button>
+        </div>
+        <div id="tab-content" class="tab-content"></div>
+      </div>
+      <div class="lab-guide">
+        <div class="guide-header">
+          <span class="guide-icon">🧪</span>
+          <h4>Lab Challenges</h4>
+        </div>
+        <div id="guide-content" class="guide-content">
+          </div>
+      </div>
+    </aside>
+  </main>
 </div>

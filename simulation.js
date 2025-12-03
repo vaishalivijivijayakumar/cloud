@@ -1,6 +1,6 @@
 // simulation.js
 // Lesson: Chemical Kinetics: Rate, Order, Mechanism & Temperature Dependence
-// Model 4: Full Multi-Scene Kinetics Engine
+// Model 4: Full Multi-Scene Kinetics Engine (Canvas API Implementation)
 
 (function() {
   'use strict';
@@ -10,7 +10,19 @@
     R: 8.314, // Gas constant in J·mol⁻¹·K⁻¹
     DEFAULT_Ea: 75000, // Nominal Activation Energy in J·mol⁻¹
     DEFAULT_A: 1e10, // Pre-exponential factor (s⁻¹ for 1st order)
-    colors: { reactant: '#ff6b6b', product: '#48dbfb', catalyst: '#feca57', text: '#E2E8F0', grid: '#4A5568' }
+    colors: {
+      reactant: '#ff6b6b',
+      product: '#48dbfb',
+      catalyst: '#feca57',
+      light: {
+        text: '#0b2545',
+        grid: '#e3f2fd'
+      },
+      dark: {
+        text: '#E2E8F0',
+        grid: '#4A5568'
+      }
+    }
   };
 
   // --- PEDAGOGICAL CONTENT (MST & LAB CHALLENGES) ---
@@ -53,7 +65,7 @@
   };
 
   const MST_CONTENT = {
-     visual: {
+    visual: {
         title: "Visual Decoding",
         1: "A concentration–time graph for R → P, with secants (average rate) and a tangent (instantaneous rate) that becomes steeper at the start and flatter as reactants are used up.",
         2: "A 'rate vs [A]' graph where slope changes with order; highlight that rate = k[A]ˣ[B]ʸ is obtained from experiment, not from stoichiometric coefficients.",
@@ -97,11 +109,11 @@
 
   // --- SCENE DEFINITIONS ---
   const SCENES = {
-    1: { name: "Measuring Reaction Rate", svg: `<canvas id="scene-canvas-1" width="400" height="280"></canvas>` },
-    2: { name: "Rate Law, Order & Molecularity", svg: `<canvas id="scene-canvas-2" width="400" height="280"></canvas><div id="s2-table-container"></div>` },
-    3: { name: "Integrated Rate Laws & Half-Life", svg: `<div id="scene-3-graphs" class="dual-view" style="flex-direction: row; gap: 5px;"></div>` },
-    4: { name: "Temperature, Arrhenius Plot & Catalyst", svg: `<div class="dual-view"><div id="scene-4-pe-diagram" class="half-panel"><canvas width="200" height="200"></canvas></div><div id="scene-4-arrhenius-plot" class="half-panel"><canvas width="200" height="200"></canvas></div></div>` },
-    5: { name: "Collision Theory & Reaction Mechanism", svg: `<canvas id="scene-canvas-5" width="400" height="280"></canvas><div id="s5-counters"></div>` }
+    1: { name: "Measuring Reaction Rate", svg: `<canvas id="scene-canvas-1"></canvas>` },
+    2: { name: "Rate Law, Order & Molecularity", svg: `<canvas id="scene-canvas-2"></canvas>` },
+    3: { name: "Integrated Rate Laws & Half-Life", svg: `<div id="scene-3-graphs" class="dual-view" style="display:flex; width:100%; height:100%; gap:10px;"></div>` },
+    4: { name: "Temperature, Arrhenius Plot & Catalyst", svg: `<div class="dual-view" style="display:flex; width:100%; height:100%; gap:10px;"><div id="scene-4-pe-diagram" class="half-panel" style="flex:1;position:relative;"><canvas></canvas></div><div id="scene-4-arrhenius-plot" class="half-panel" style="flex:1;position:relative;"><canvas></canvas></div></div>` },
+    5: { name: "Collision Theory & Reaction Mechanism", svg: `<canvas id="scene-canvas-5"></canvas><div id="s5-counters" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.5); color:white; padding:5px; border-radius:5px; font-size:0.8em;"></div>` }
   };
 
   // --- APPLICATION STATE ---
@@ -128,12 +140,8 @@
   // --- DOM ELEMENT REFERENCES ---
    const els = {
     stage: document.getElementById('scene-stage'),
-    particles: document.getElementById('particle-layer'),
     tabContent: document.getElementById('tab-content'),
-    thermReadout: document.querySelector('.therm-readout'),
-    thermLiquid: document.getElementById('therm-liquid'),
     chillBadge: document.getElementById('chill-badge'),
-    scopeLens: document.getElementById('scope-lens'),
     guideContent: document.getElementById('guide-content'),
     inpTemp: document.getElementById('inp-temp'),
     valTemp: document.getElementById('val-temp'),
@@ -155,10 +163,14 @@
   // --- CORE SIMULATION LOGIC ---
   function calculateKinetics() {
     const T_K = state.temp + 273.15;
-    const Ea_eff = CONFIG.DEFAULT_Ea - (state.catalyst * 10000);
+    const Ea_eff = CONFIG.DEFAULT_Ea - (state.catalyst * 1000);
     state.k = CONFIG.DEFAULT_A * Math.exp(-Ea_eff / (CONFIG.R * T_K));
 
     let conc = state.concentrationA;
+    if(!state.running) { // For pre-rendering
+        conc = state.initialConcentration;
+    }
+
     switch(state.order) {
         case 0: state.rate = state.k; break;
         case 0.5: state.rate = state.k * Math.sqrt(conc); break;
@@ -170,26 +182,31 @@
         state.rate = state.k * state.concentrationA * state.concentrationB;
     }
 
-    switch(state.order) {
-        case 0: state.halfLife = state.initialConcentration / (2 * state.k); break;
-        case 1: state.halfLife = 0.693 / state.k; break;
-        case 2: state.halfLife = 1 / (state.k * state.initialConcentration); break;
-        default: state.halfLife = Infinity;
+    if (state.k > 0) {
+        switch(state.order) {
+            case 0: state.halfLife = state.initialConcentration / (2 * state.k); break;
+            case 1: state.halfLife = 0.693 / state.k; break;
+            case 2: state.halfLife = 1 / (state.k * state.initialConcentration); break;
+            default: state.halfLife = Infinity;
+        }
+    } else {
+        state.halfLife = Infinity;
     }
   }
 
   // --- UI UPDATE LOGIC ---
-  function updateVisuals() {
+  function updateUI() {
     els.valTemp.innerText = state.temp;
     els.valArea.innerText = state.initialConcentration.toFixed(2);
 
     if (state.scene === 2 && state.reactionType === 'bimolecular') {
         els.lblArea.innerHTML = `[A]₀ (<span id="val-area">${state.concentrationA.toFixed(2)}</span> mol·L⁻¹)`;
         els.lblWind.innerHTML = `[B]₀ (<span id="val-wind">${state.concentrationB.toFixed(2)}</span> mol·L⁻¹)`;
+        els.valWind.innerText = state.concentrationB.toFixed(2);
     } else if (state.scene === 5) {
         els.lblWind.innerHTML = `Orientation Factor P (<span id="val-wind">${state.orientationFactor.toFixed(2)}</span>)`;
-    }
-    else {
+        els.valWind.innerText = state.orientationFactor.toFixed(2);
+    } else {
         els.lblArea.innerHTML = `Initial [R]₀ (<span id="val-area">${state.initialConcentration.toFixed(2)}</span> mol·L⁻¹)`;
         els.lblWind.innerHTML = `Catalyst Strength (<span id="val-wind">${state.catalyst}</span>)`;
         els.valWind.innerText = state.catalyst;
@@ -198,10 +215,6 @@
     els.outEvap.innerText = state.rate > 0 ? state.rate.toExponential(2) : '0.00';
     els.outCool.innerText = `k=${state.k.toExponential(2)} | t½=${state.halfLife.toFixed(1)}s`;
 
-    const energyPercent = Math.min(100, (state.temp / 100) * 100 + state.rate * 500);
-    els.thermLiquid.style.height = `${energyPercent}%`;
-
-    // Call the correct drawing function for the active scene
     const drawingFunction = window[`drawScene${state.scene}`];
     if (typeof drawingFunction === 'function') {
         drawingFunction();
@@ -211,12 +224,15 @@
   // --- SCENE RENDERING & MANAGEMENT ---
   function renderScene() {
     els.stage.innerHTML = SCENES[state.scene].svg;
+
     const guides = BLOOM_GUIDES[state.scene] || [];
-    els.guideContent.innerHTML = `<ul class="guide-list">
-      ${guides.map(g => `<li class="guide-item challenge-${g.level}"><strong>${g.tag}:</strong><span>${g.text}</span></li>`).join('')}
+     els.guideContent.innerHTML = `<ul class="guide-list">
+      ${guides.map(g => `<li class="guide-item bloom-${g.level.toLowerCase()}">
+          <strong class="bloom-tag ${g.level.toLowerCase()}">${g.tag}</strong>
+          <span class="guide-text">${g.text}</span>
+      </li>`).join('')}
     </ul>`;
 
-    // Repurpose sliders based on scene
     if (state.scene === 2 && state.reactionType === 'bimolecular') {
         Object.assign(els.inpWind, { min: 0.05, max: 2.0, step: 0.05, value: state.concentrationB });
     } else if (state.scene === 5) {
@@ -233,7 +249,8 @@
     const contentData = MST_CONTENT[activeTab];
     if (!contentData) return;
 
-    let content = `<h4>${contentData.title}</h4><ul><li>${contentData[state.scene]}</li></ul>`;
+    const sceneContent = contentData[state.scene] || "Select a scene to see content.";
+    let content = `<h4>${contentData.title}</h4><ul><li>${sceneContent}</li></ul>`;
 
     if (state.scene === 2 && activeTab === 'model') {
        content += generateRateTable();
@@ -241,8 +258,8 @@
     els.tabContent.innerHTML = content;
   }
 
-  function generateRateTable() {
-      let table = `<br><strong>Sample Data:</strong><table id="s2-rate-table"><tr><th>[R] (mol·L⁻¹)</th><th>Rate (mol·L⁻¹·s⁻¹)</th></tr>`;
+   function generateRateTable() {
+      let table = `<br><strong>Sample Data:</strong><table id="s2-rate-table" style="width:100%; text-align:center;"><thead><tr><th>[R] (mol·L⁻¹)</th><th>Rate (mol·L⁻¹·s⁻¹)</th></tr></thead><tbody>`;
       for (let i = 1; i <= 4; i++) {
           const conc = (state.initialConcentration * i / 2);
           let rate;
@@ -255,7 +272,7 @@
             }
           table += `<tr><td>${conc.toFixed(2)}</td><td>${rate.toExponential(2)}</td></tr>`;
       }
-      table += '</table>';
+      table += '</tbody></table>';
       return table;
   }
 
@@ -264,19 +281,26 @@
     state.running = false;
     state.simTime = 0;
     state.concentrationA = state.initialConcentration;
-    state.concentrationHistory = [];
+    state.concentrationHistory = []; // Clear history for pre-rendering
     els.btnRun.disabled = false;
     els.btnPause.disabled = true;
     els.chillBadge.hidden = true;
     if (animFrame) cancelAnimationFrame(animFrame);
     calculateKinetics();
-    updateVisuals();
+    if(state.scene === 1) preRenderScene1();
+    updateUI();
   }
 
   function animLoop() {
-    if (!state.running) return;
+    if (!state.running) {
+        if(state.scene === 5) {
+             window.drawScene5();
+             animFrame = requestAnimationFrame(animLoop);
+        }
+        return;
+    }
 
-    state.simTime += 0.05; // simulation time step
+    state.simTime += 0.1;
     const t = state.simTime, R0 = state.initialConcentration, k = state.k;
     let currentConc;
 
@@ -284,7 +308,11 @@
         case 0: currentConc = R0 - k * t; break;
         case 1: currentConc = R0 * Math.exp(-k * t); break;
         case 2: currentConc = 1 / (1/R0 + k * t); break;
-        case 0.5: currentConc = state.concentrationA - k * Math.sqrt(state.concentrationA) * 0.05; break; // Euler method
+        case 0.5: {
+            const lastConc = state.concentrationA > 0 ? state.concentrationA : R0;
+            currentConc = lastConc - k * Math.sqrt(lastConc) * 0.1;
+            break;
+        }
         default: currentConc = state.concentrationA;
     }
     state.concentrationA = Math.max(0, currentConc);
@@ -298,40 +326,68 @@
     }
 
     calculateKinetics();
-    updateVisuals();
+    updateUI();
     animFrame = requestAnimationFrame(animLoop);
   }
 
-  // --- SCENE-SPECIFIC DRAWING FUNCTIONS ---
-  // A simple canvas drawing helper
+  // --- CANVAS DRAWING HELPERS ---
   function setupCanvas(canvasId, xLabel, yLabel) {
-    makeCanvasResponsive(canvas, () => drawAll());
+    let canvas = document.getElementById(canvasId);
+    if (canvas && canvas.tagName !== 'CANVAS') {
+      canvas = canvas.querySelector('canvas');
+    }
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
-    const margin = { top: 15, right: 15, bottom: 40, left: 50 };
+    const theme = document.documentElement.dataset.theme || 'light';
+    const themeColors = CONFIG.colors[theme];
+
+    const margin = { top: 20, right: 20, bottom: 40, left: 50 };
     const width = canvas.width - margin.left - margin.right;
     const height = canvas.height - margin.top - margin.bottom;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = CONFIG.colors.text;
-    ctx.font = '10px Poppins';
+    ctx.fillStyle = themeColors.text;
+    ctx.strokeStyle = themeColors.grid;
 
-    // Draw axes
-    ctx.beginPath();
-    ctx.moveTo(margin.left, margin.top);
-    ctx.lineTo(margin.left, margin.top + height);
-    ctx.lineTo(margin.left + width, margin.top + height);
-    ctx.strokeStyle = CONFIG.colors.grid;
-    ctx.stroke();
+    if(xLabel || yLabel) {
+        ctx.beginPath();
+        ctx.moveTo(margin.left, margin.top);
+        ctx.lineTo(margin.left, margin.top + height);
+        ctx.lineTo(margin.left + width, margin.top + height);
+        ctx.stroke();
 
-    // Labels
-    ctx.textAlign = 'center';
-    ctx.fillText(xLabel, margin.left + width / 2, canvas.height - 5);
-    ctx.save();
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText(yLabel, -canvas.height / 2, margin.left - 35);
-    ctx.restore();
+        ctx.font = '12px Poppins';
+        ctx.textAlign = 'center';
+        if(xLabel) ctx.fillText(xLabel, margin.left + width / 2, canvas.height - 10);
+        ctx.save();
+        ctx.rotate(-Math.PI / 2);
+        if(yLabel) ctx.fillText(yLabel, -canvas.height / 2, margin.left - 30);
+        ctx.restore();
+    }
+    return { ctx, width, height, margin, themeColors };
+  }
 
-    return { ctx, width, height, margin };
+  // --- SCENE-SPECIFIC DRAWING FUNCTIONS ---
+  function preRenderScene1() {
+      const xMax = state.halfLife > 0.1 && isFinite(state.halfLife) ? Math.max(30, 2.5 * state.halfLife) : 30;
+      state.concentrationHistory = [];
+      for (let t = 0; t <= xMax; t+= 0.2) {
+           let conc;
+           const R0 = state.initialConcentration, k = state.k;
+           switch(state.order) {
+               case 0: conc = R0 - k * t; break;
+               case 1: conc = R0 * Math.exp(-k * t); break;
+               case 2: conc = 1 / (1/R0 + k * t); break;
+               case 0.5: conc = Math.pow(Math.sqrt(R0) - 0.5 * k * t, 2); break; // Integrated form
+               default: conc = R0;
+           }
+           state.concentrationHistory.push({time: t, conc: Math.max(0,conc)});
+           if (conc <= 0) break;
+      }
   }
 
   window.drawScene1 = function() {
@@ -339,23 +395,21 @@
     if (!graph) return;
     const { ctx, width, height, margin } = graph;
 
-    const xMax = state.halfLife > 0.1 ? Math.max(30, 2.5 * state.halfLife) : 30;
+    const xMax = state.halfLife > 0.1 && isFinite(state.halfLife) ? Math.max(30, 2.5 * state.halfLife) : 30;
     const yMax = state.initialConcentration;
 
-    // Draw curve
     ctx.beginPath();
-    ctx.moveTo(margin.left, margin.top);
-    state.concentrationHistory.forEach(point => {
+    state.concentrationHistory.forEach((point, i) => {
         const x = margin.left + (point.time / xMax) * width;
         const y = margin.top + height - (point.conc / yMax) * height;
-        ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     });
     ctx.strokeStyle = CONFIG.colors.reactant;
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Draw tangent and secant if running
-    if (state.running && state.concentrationHistory.length > 20) {
+    if (state.concentrationHistory.length > 5) {
         const p1_idx = Math.floor(state.concentrationHistory.length / 4);
         const p2_idx = Math.floor(state.concentrationHistory.length * 3 / 4);
         const p1 = state.concentrationHistory[p1_idx];
@@ -366,22 +420,25 @@
         const p2_x = margin.left + (p2.time / xMax) * width;
         const p2_y = margin.top + height - (p2.conc / yMax) * height;
 
-        // Secant line
+        ctx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
         ctx.beginPath();
         ctx.moveTo(p1_x, p1_y);
         ctx.lineTo(p2_x, p2_y);
-        ctx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
-        ctx.setLineDash([2, 2]);
         ctx.stroke();
-        ctx.setLineDash([]);
 
-        // Tangent
-        const inst_rate = state.k * Math.pow(p1.conc, state.order);
+        let inst_rate;
+        switch(state.order) {
+            case 0: inst_rate = state.k; break;
+            case 0.5: inst_rate = state.k * Math.sqrt(p1.conc); break;
+            case 1: inst_rate = state.k * p1.conc; break;
+            case 2: inst_rate = state.k * Math.pow(p1.conc, 2); break;
+            default: inst_rate = 0;
+        }
         const slope = -inst_rate / (yMax / height) * (xMax / width);
-        ctx.beginPath();
-        ctx.moveTo(p1_x - 30, p1_y - 30 * slope);
-        ctx.lineTo(p1_x + 30, p1_y + 30 * slope);
         ctx.strokeStyle = 'rgba(0, 255, 255, 0.7)';
+        ctx.beginPath();
+        ctx.moveTo(p1_x - 40, p1_y - 40 * slope);
+        ctx.lineTo(p1_x + 40, p1_y + 40 * slope);
         ctx.stroke();
     }
   };
@@ -391,112 +448,116 @@
     if (!graph) return;
     const { ctx, width, height, margin } = graph;
 
-    const xMax = 2.0;
-    const yMax = state.k * Math.pow(xMax, state.order);
+    const xMax = state.initialConcentration * 1.5;
+    let yMax = 1;
+
+    const points = Array.from({length:101}, (_,i) => {
+        const conc = (i/100) * xMax;
+        let rate;
+        switch(state.order) {
+            case 0: rate = state.k; break;
+            case 0.5: rate = state.k * Math.sqrt(conc); break;
+            case 1: rate = state.k * conc; break;
+            case 2: rate = state.k * Math.pow(conc, 2); break;
+            default: rate = 0;
+        }
+        return {conc, rate};
+    });
+
+    yMax = Math.max(...points.map(p => p.rate), 0.01);
 
     ctx.beginPath();
-    ctx.moveTo(margin.left, margin.top + height);
-    for (let i = 0; i <= 100; i++) {
-        const conc = (i / 100) * xMax;
-        const rate = state.k * Math.pow(conc, state.order);
-        const x = margin.left + (conc / xMax) * width;
-        const y = margin.top + height - (rate / yMax) * height;
-        ctx.lineTo(x, y);
-    }
+    points.forEach((p, i) => {
+        const x = margin.left + (p.conc / xMax) * width;
+        const y = margin.top + height - (p.rate / yMax) * height;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
     ctx.strokeStyle = CONFIG.colors.product;
-    ctx.lineWidth = 2;
     ctx.stroke();
   };
 
   window.drawScene3 = function() {
-    const container = document.getElementById('scene-3-graphs');
-    container.innerHTML = `
-      <canvas id="s3-c1" width="80" height="100"></canvas>
-      <canvas id="s3-c2" width="80" height="100"></canvas>
-      <canvas id="s3-c3" width="80" height="100"></canvas>`;
+      const container = document.getElementById('scene-3-graphs');
+      container.innerHTML = `<canvas id="s3-c1"></canvas><canvas id="s3-c2"></canvas><canvas id="s3-c3"></canvas>`;
 
-    const titles = ["[R] vs t", "ln[R] vs t", "1/[R] vs t"];
-    const isLinear = [state.order === 0, state.order === 1, state.order === 2];
+      const plotTypes = [
+          { key: 'conc', title: '[R] vs t' },
+          { key: 'ln', title: 'ln[R] vs t' },
+          { key: 'inv', title: '1/[R] vs t' }
+      ];
 
-    for (let i = 1; i <= 3; i++) {
-        const graph = setupCanvas(`s3-c${i}`, 'Time', titles[i-1]);
-        if (!graph) continue;
-        const { ctx, width, height, margin } = graph;
+      const xMax = state.halfLife > 0.1 && isFinite(state.halfLife) ? Math.max(30, 2.5 * state.halfLife) : 30;
+      const timePoints = Array.from({length: 51}, (_, i) => (i/50) * xMax);
 
-        if(isLinear[i-1]) { // Highlight if it's the linear plot for the order
-            ctx.fillStyle = 'rgba(0, 255, 100, 0.1)';
-            ctx.fillRect(margin.left, margin.top, width, height);
-        }
+      plotTypes.forEach((type, i) => {
+          const graph = setupCanvas(`s3-c${i+1}`, 'Time (s)', type.title);
+          if(!graph) return;
+          const { ctx, width, height, margin } = graph;
 
-        const xMax = state.halfLife > 0.1 ? Math.max(30, 2.5 * state.halfLife) : 30;
-        const R0 = state.initialConcentration;
-        const k = state.k;
+          const R0 = state.initialConcentration;
+          const k = state.k;
 
-        ctx.beginPath();
-        for(let t_step = 0; t_step <= 100; t_step++) {
-            const t = (t_step / 100) * xMax;
-            const conc = Math.max(0.001, (state.order === 0) ? R0 - k*t : (state.order === 1) ? R0 * Math.exp(-k*t) : 1 / (1/R0 + k*t));
+          const points = timePoints.map(t => {
+              const conc = (state.order === 0) ? R0 - k*t : (state.order === 1) ? R0 * Math.exp(-k*t) : 1 / (1/R0 + k*t);
+              if (conc <= 0) return null;
+              if (type.key === 'ln') return Math.log(conc);
+              if (type.key === 'inv') return 1/conc;
+              return conc;
+          }).filter(p => p !== null);
 
-            let yVal;
-            if (i === 1) yVal = conc;
-            else if (i === 2) yVal = Math.log(conc);
-            else yVal = 1/conc;
+          if (points.length === 0) return;
+          const yMax = Math.max(...points);
+          const yMin = Math.min(...points);
 
-            const yMin = (i === 1) ? 0 : (i === 2) ? Math.log(0.001) : 1/R0;
-            const yMax = (i === 1) ? R0 : (i === 2) ? Math.log(R0) : 1/0.001;
-
-            const x = margin.left + (t / xMax) * width;
-            const y = margin.top + height - ((yVal - yMin) / (yMax - yMin)) * height;
-
-            if (t_step === 0) ctx.moveTo(x,y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = CONFIG.colors.catalyst;
-        ctx.stroke();
-    }
+          ctx.beginPath();
+          points.forEach((p, j) => {
+              const x = margin.left + (timePoints[j] / xMax) * width;
+              const y = margin.top + height - ((p - yMin) / (yMax - yMin)) * height;
+              if (j === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+          });
+          ctx.strokeStyle = CONFIG.colors.catalyst;
+          ctx.stroke();
+      });
   };
 
   window.drawScene4 = function() {
-    // PE Diagram
-    const pe = setupCanvas('scene-4-pe-diagram', 'Reaction Coordinate', 'Potential Energy');
+    const pe = setupCanvas('scene-4-pe-diagram', 'Reaction Coordinate', 'PE');
     if (pe) {
         const { ctx, width, height, margin } = pe;
-        const Ea_eff = CONFIG.DEFAULT_Ea - (state.catalyst * 10000);
-
         const drawCurve = (Ea, color) => {
-            const peak_h = (Ea / 100000) * height;
             ctx.beginPath();
-            ctx.moveTo(margin.left, margin.top + height * 0.8); // Reactants
-            ctx.bezierCurveTo(margin.left + width*0.25, margin.top + height*0.8,
-                              margin.left + width*0.3, margin.top + height*0.8 - peak_h,
-                              margin.left + width*0.5, margin.top + height*0.8 - peak_h);
-            ctx.bezierCurveTo(margin.left + width*0.7, margin.top + height*0.8 - peak_h,
-                              margin.left + width*0.75, margin.top + height*0.4,
-                              margin.left + width, margin.top + height*0.4); // Products
+            ctx.moveTo(margin.left, margin.top + height * 0.8);
+            ctx.bezierCurveTo(
+                margin.left + width * 0.3, margin.top + height * 0.8 - Ea,
+                margin.left + width * 0.7, margin.top + height * 0.8 - Ea,
+                margin.left + width, margin.top + height * 0.4
+            );
             ctx.strokeStyle = color;
             ctx.stroke();
         };
-        drawCurve(CONFIG.DEFAULT_Ea, CONFIG.colors.reactant);
+        drawCurve(height * 0.6, CONFIG.colors.reactant);
         if (state.catalyst > 0) {
-            drawCurve(Ea_eff, CONFIG.colors.catalyst);
+            const Ea_eff_h = height * 0.6 * ( (CONFIG.DEFAULT_Ea - state.catalyst * 1000) / CONFIG.DEFAULT_Ea);
+            drawCurve(Ea_eff_h, CONFIG.colors.catalyst);
         }
     }
-    // Arrhenius Plot
     const arr = setupCanvas('scene-4-arrhenius-plot', '1/T (K⁻¹)', 'ln(k)');
     if (arr) {
         const { ctx, width, height, margin } = arr;
-        const temps = [290, 300, 310, 320, 330];
+        const temps = [280, 290, 300, 310, 320, 330, 340, 350];
         const points = temps.map(T => {
             const k = CONFIG.DEFAULT_A * Math.exp(-CONFIG.DEFAULT_Ea / (CONFIG.R * T));
             return { x: 1/T, y: Math.log(k) };
         });
-        const xMin = Math.min(...points.map(p=>p.x)), xMax = Math.max(...points.map(p=>p.x));
-        const yMin = Math.min(...points.map(p=>p.y)), yMax = Math.max(...points.map(p=>p.y));
+        const xMin = Math.min(...points.map(p => p.x)), xMax = Math.max(...points.map(p => p.x));
+        const yMin = Math.min(...points.map(p => p.y)), yMax = Math.max(...points.map(p => p.y));
 
         ctx.beginPath();
         points.forEach((p, i) => {
-           const x = margin.left + ((p.x - xMin) / (xMax - xMin)) * width;
-           const y = margin.top + height - ((p.y - yMin) / (yMax - yMin)) * height;
+           const x = margin.left + width - (((p.x - xMin) / (xMax - xMin)) * width);
+           const y = margin.top + height - (((p.y - yMin) / (yMax - yMin)) * height);
            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
            ctx.fillRect(x-2, y-2, 4, 4);
         });
@@ -506,51 +567,50 @@
   };
 
   window.drawScene5 = function() {
-    const graph = setupCanvas('scene-canvas-5', '', 'Collision Chamber');
+    const graph = setupCanvas('scene-canvas-5', null, null);
     if (!graph) return;
     const { ctx, width, height, margin } = graph;
 
-    if (!state.running || particles.length === 0) {
-        particles = [];
-        for (let i = 0; i < 40; i++) {
+    if (particles.length === 0) {
+        const numParticles = Math.floor(state.initialConcentration * 40);
+        for (let i = 0; i < numParticles; i++) {
             particles.push({
-                x: Math.random() * width, y: Math.random() * height,
-                vx: (Math.random() - 0.5) * state.temp / 10, vy: (Math.random() - 0.5) * state.temp / 10,
-                radius: 3, color: CONFIG.colors.reactant
+                x: Math.random() * width + margin.left,
+                y: Math.random() * height + margin.top,
+                vx: (Math.random() - 0.5) * (state.temp / 10),
+                vy: (Math.random() - 0.5) * (state.temp / 10),
+                radius: 4,
+                type: 'reactant'
             });
         }
         collisionCounters = { total: 0, effective: 0 };
     }
 
-    // Update and draw particles
     particles.forEach((p, i) => {
         p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
+        if (p.x < margin.left || p.x > width + margin.left) { p.x = Math.max(margin.left, Math.min(p.x, width+margin.left)); p.vx *= -1; }
+        if (p.y < margin.top || p.y > height + margin.top) { p.y = Math.max(margin.top, Math.min(p.y, height+margin.top)); p.vy *= -1; }
 
-        // Simplified collision check
         for (let j = i + 1; j < particles.length; j++) {
             const other = particles[j];
             const dist = Math.hypot(p.x - other.x, p.y - other.y);
-            if (dist < p.radius + other.radius) {
+            if (dist < p.radius + other.radius && p.type === 'reactant' && other.type === 'reactant') {
                 collisionCounters.total++;
-                // Check for effective collision
                 const kineticEnergy = 0.5 * (p.vx**2 + p.vy**2 + other.vx**2 + other.vy**2);
-                const effectiveEa = (CONFIG.DEFAULT_Ea / CONFIG.R) / 1000; // Simplified scale
+                const effectiveEa = (CONFIG.DEFAULT_Ea / CONFIG.R) / 1000;
                 if (kineticEnergy > effectiveEa && Math.random() < state.orientationFactor) {
                     collisionCounters.effective++;
-                    p.color = other.color = CONFIG.colors.product;
+                    p.type = other.type = 'product';
                 }
             }
         }
 
         ctx.beginPath();
-        ctx.arc(p.x + margin.left, p.y + margin.top, p.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = p.color;
+        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = p.type === 'reactant' ? CONFIG.colors.reactant : CONFIG.colors.product;
         ctx.fill();
     });
 
-    // Update counters
     document.getElementById('s5-counters').innerHTML = `
       <span>Total Collisions: ${collisionCounters.total}</span> |
       <span>Effective Collisions: ${collisionCounters.effective}</span>`;
@@ -558,48 +618,47 @@
 
   // --- INITIALIZATION ---
   function init() {
-    // Input Listeners
     els.inpTemp.addEventListener('input', e => { state.temp = parseFloat(e.target.value); if(!state.running) resetSimulation(); });
     els.inpHumidity.addEventListener('change', e => { state.order = parseFloat(e.target.value); resetSimulation(); });
     els.inpLiquid.addEventListener('change', e => { state.reactionType = e.target.value; renderScene(); });
     els.inpArea.addEventListener('input', e => {
         state.initialConcentration = parseFloat(e.target.value);
-        if (state.scene !== 2 || state.reactionType !== 'bimolecular') {
-            state.concentrationA = state.initialConcentration;
-        } else {
-             state.concentrationA = parseFloat(e.target.value);
+        if(!state.running) {
+             state.concentrationA = state.initialConcentration;
+             resetSimulation();
         }
-        if(!state.running) resetSimulation();
     });
     els.inpWind.addEventListener('input', e => {
         const val = parseFloat(e.target.value);
         if (state.scene === 2 && state.reactionType === 'bimolecular') state.concentrationB = val;
         else if (state.scene === 5) state.orientationFactor = val;
-        else state.catalyst = val;
+        else state.catalyst = parseInt(val);
         if(!state.running) resetSimulation();
     });
 
-    // Button Listeners
     els.btnRun.addEventListener('click', () => {
-      if (state.simTime <= 0.01) {
-         state.initialConcentration = state.concentrationA;
-         state.concentrationHistory = [{time: 0, conc: state.concentrationA}];
+      if (!state.running) {
+        if (state.simTime <= 0.01) {
+            state.concentrationA = state.initialConcentration;
+            state.concentrationHistory = [{time: 0, conc: state.concentrationA}];
+        }
+        state.running = true;
+        els.btnRun.disabled = true; els.btnPause.disabled = false;
+        els.chillBadge.hidden = true;
+        if(state.scene === 5) particles = [];
+        animFrame = requestAnimationFrame(animLoop);
       }
-      state.running = true;
-      els.btnRun.disabled = true; els.btnPause.disabled = false;
-      els.chillBadge.hidden = true;
-      animFrame = requestAnimationFrame(animLoop);
     });
     els.btnPause.addEventListener('click', () => { state.running = false; els.btnRun.disabled = false; els.btnPause.disabled = true; });
     els.btnReset.addEventListener('click', renderScene);
 
-    // Tab and Scene Listeners
     document.querySelectorAll('.scene-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         const target = e.target.closest('.scene-btn');
         document.querySelector('.scene-btn.active').classList.remove('active');
         target.classList.add('active');
         state.scene = parseInt(target.dataset.scene);
+        if(state.scene === 5) animFrame = requestAnimationFrame(animLoop);
         renderScene();
         updateTabs();
       });
@@ -612,11 +671,9 @@
       });
     });
 
-    // Initial Setup
     renderScene();
     updateTabs();
   }
 
   init();
 })();
-// --- RESPONSIVE CANVAS ENGINE ---

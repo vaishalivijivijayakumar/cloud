@@ -494,6 +494,14 @@ select { padding: 6px; border-radius: 6px; border: 1px solid var(--color-border)
 }
 .guide-item:last-child { border-bottom: none; }
 
+.guide-item.bloom-experiment {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.guide-item.bloom-experiment:hover {
+    background-color: rgba(0, 120, 255, 0.05);
+}
+
 .bloom-tag {
     font-size: 0.7rem;
     font-weight: 700;
@@ -510,6 +518,16 @@ select { padding: 6px; border-radius: 6px; border: 1px solid var(--color-border)
 .bloom-tag.create { color: #8b5cf6; }
 
 .guide-text { color: var(--color-text); }
+
+.control-highlight {
+    animation: highlight 0.7s ease-out;
+}
+
+@keyframes highlight {
+    0% { background-color: rgba(0, 120, 255, 0); }
+    50% { background-color: rgba(0, 120, 255, 0.2); }
+    100% { background-color: rgba(0, 120, 255, 0); }
+}
 
 @media (max-width: 768px) {
     .sim-main { grid-template-columns: 1fr; }

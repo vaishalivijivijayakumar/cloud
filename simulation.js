@@ -163,34 +163,52 @@
   // --- CORE SIMULATION LOGIC ---
   function calculateKinetics() {
     const T_K = state.temp + 273.15;
+    // Note: Catalyst slider is repurposed in Scene 5, so Ea_eff is intentionally not used there.
     const Ea_eff = CONFIG.DEFAULT_Ea - (state.catalyst * 1000);
-    state.k = CONFIG.DEFAULT_A * Math.exp(-Ea_eff / (CONFIG.R * T_K));
 
-    let conc = state.concentrationA;
-    if(!state.running) { // For pre-rendering
-        conc = state.initialConcentration;
-    }
+    if (state.scene === 5) {
+        // Use Collision Theory model for Scene 5
+        const Z0 = 1e10; // Base collision frequency factor from prompt
+        const T_ref = 298.15; // Standard temp for scaling
+        const Z = Z0 * Math.sqrt(T_K / T_ref) * state.concentrationA;
+        const P = state.orientationFactor;
+        const arrheniusFactor = Math.exp(-CONFIG.DEFAULT_Ea / (CONFIG.R * T_K)); // Use default Ea
+        state.rate = Z * P * arrheniusFactor;
 
-    switch(state.order) {
-        case 0: state.rate = state.k; break;
-        case 0.5: state.rate = state.k * Math.sqrt(conc); break;
-        case 1: state.rate = state.k * conc; break;
-        case 2: state.rate = state.k * Math.pow(conc, 2); break;
-        default: state.rate = 0;
-    }
-    if (state.reactionType === 'bimolecular') {
-        state.rate = state.k * state.concentrationA * state.concentrationB;
-    }
+        // Derive a pseudo-k for display consistency
+        state.k = state.concentrationA > 0 ? state.rate / state.concentrationA : 0;
+        state.halfLife = state.k > 0 ? 0.693 / state.k : Infinity;
 
-    if (state.k > 0) {
-        switch(state.order) {
-            case 0: state.halfLife = state.initialConcentration / (2 * state.k); break;
-            case 1: state.halfLife = 0.693 / state.k; break;
-            case 2: state.halfLife = 1 / (state.k * state.initialConcentration); break;
-            default: state.halfLife = Infinity;
-        }
     } else {
-        state.halfLife = Infinity;
+        // Use standard Arrhenius-based rate law for all other scenes
+        state.k = CONFIG.DEFAULT_A * Math.exp(-Ea_eff / (CONFIG.R * T_K));
+
+        let conc = state.concentrationA;
+        if(!state.running) { // For pre-rendering and static display
+            conc = state.initialConcentration;
+        }
+
+        switch(String(state.order)) {
+            case '0': state.rate = state.k; break;
+            case '0.5': state.rate = conc > 0 ? state.k * Math.sqrt(conc) : 0; break;
+            case '1': state.rate = state.k * conc; break;
+            case '2': state.rate = state.k * Math.pow(conc, 2); break;
+            default: state.rate = 0;
+        }
+        if (state.reactionType === 'bimolecular') {
+            state.rate = state.k * state.concentrationA * state.concentrationB;
+        }
+
+        if (state.k > 0) {
+            switch(String(state.order)) {
+                case '0': state.halfLife = state.initialConcentration / (2 * state.k); break;
+                case '1': state.halfLife = 0.693 / state.k; break;
+                case '2': state.halfLife = state.initialConcentration > 0 ? 1 / (state.k * state.initialConcentration) : Infinity; break;
+                default: state.halfLife = Infinity;
+            }
+        } else {
+            state.halfLife = Infinity;
+        }
     }
   }
 
@@ -227,11 +245,17 @@
 
     const guides = BLOOM_GUIDES[state.scene] || [];
      els.guideContent.innerHTML = `<ul class="guide-list">
-      ${guides.map(g => `<li class="guide-item bloom-${g.level.toLowerCase()}">
+      ${guides.map(g => `<li class="guide-item bloom-${g.level.toLowerCase()}" data-level="${g.level.toLowerCase()}">
           <strong class="bloom-tag ${g.level.toLowerCase()}">${g.tag}</strong>
           <span class="guide-text">${g.text}</span>
       </li>`).join('')}
     </ul>`;
+
+    // Add click listener for the 'experiment' challenge
+    const experimentChallenge = els.guideContent.querySelector('.guide-item[data-level="experiment"]');
+    if (experimentChallenge) {
+        experimentChallenge.addEventListener('click', () => handleExperimentClick(state.scene));
+    }
 
     if (state.scene === 2 && state.reactionType === 'bimolecular') {
         Object.assign(els.inpWind, { min: 0.05, max: 2.0, step: 0.05, value: state.concentrationB });
@@ -277,6 +301,52 @@
   }
 
   // --- ANIMATION & SIMULATION CONTROL ---
+  function highlightControl(el) {
+      el.classList.add('control-highlight');
+      setTimeout(() => el.classList.remove('control-highlight'), 700);
+  }
+
+  function handleExperimentClick(scene) {
+    switch (scene) {
+        case 1:
+            // "Find a temperature that makes the initial rate for a first-order reaction..."
+            state.order = 1;
+            els.inpHumidity.value = '1';
+            highlightControl(els.inpHumidity);
+            resetSimulation();
+            break;
+        case 2:
+            // "Using the bimolecular reaction, set the order for [A] to 1 and [B] to 1..."
+            state.reactionType = 'bimolecular';
+            state.order = 2; // Overall order
+            els.inpLiquid.value = 'bimolecular';
+            els.inpHumidity.value = '2'; // Sync UI dropdown
+            highlightControl(els.inpLiquid);
+            highlightControl(els.inpHumidity);
+            renderScene(); // Rerender scene for bimolecular setup
+            break;
+        case 3:
+            // "Adjust temperature to get a first-order half-life of exactly 10 seconds."
+            state.order = 1;
+            els.inpHumidity.value = '1';
+            highlightControl(els.inpHumidity);
+            resetSimulation();
+            break;
+        case 4:
+            // "Using the sliders for concentration and temperature, design two different sets..."
+            // No specific setup needed, just reset to a clean state.
+            resetSimulation();
+            break;
+        case 5:
+            // "Set a low 'Orientation Factor'..."
+            state.orientationFactor = 0.1;
+            els.inpWind.value = '0.1';
+            highlightControl(els.inpWind);
+            resetSimulation();
+            break;
+    }
+  }
+
   function resetSimulation() {
     state.running = false;
     state.simTime = 0;

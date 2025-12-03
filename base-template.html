@@ -4,12 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tarcin Simulation Base Template</title>
-  
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --color-primary: #0078ff;
@@ -20,7 +17,6 @@
       --color-border: #e3f2fd;
       --shadow: 0 4px 16px rgba(0, 120, 255, 0.1);
     }
-
     [data-theme="dark"] {
       --color-background: #1a202c;
       --color-text: #e2e8f0;
@@ -28,7 +24,6 @@
       --color-border: #4a5568;
       --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
-
     body {
       font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--color-background);
@@ -37,9 +32,7 @@
       overflow-x: hidden;
       margin: 0;
       padding: 20px;
-      transition: background 0.3s, color 0.3s;
     }
-
     .card {
       background: var(--color-card);
       border-radius: 16px;
@@ -49,9 +42,8 @@
       max-width: 800px;
       margin: 0 auto;
       position: relative;
-      transition: all 0.3s ease;
+      transition: 0.3s ease;
     }
-
     .theme-toggle-card {
       position: absolute;
       top: 32px;
@@ -67,9 +59,7 @@
       justify-content: center;
       transition: all 0.25s ease;
       z-index: 10;
-      font-size: 18px;
     }
-
     .simulation-panel {
       background: linear-gradient(135deg, rgba(0,120,255,0.05), rgba(0,212,255,0.05));
       border: 2px dashed var(--color-border);
@@ -84,19 +74,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: background 0.3s, color 0.3s;
-      overflow-y: auto;
-    }
-
-    .card-title {
-      margin-top: 0;
-      margin-bottom: 16px;
-      font-weight: 600;
-      font-size: 1.8rem;
-    }
-
-    button:focus {
-      outline: none;
     }
   </style>
 </head>
@@ -104,61 +81,50 @@
   <div class="card">
     <h2 class="card-title">Tarcin Simulation Portal</h2>
     <p style="margin-bottom: 16px;">Your simulation will load below automatically.</p>
-    
-    <!-- Theme Toggle -->
-    <button class="theme-toggle-card" id="theme-toggle-card">
-      <span id="theme-icon">🌙</span>
-    </button>
-
-    <!-- Simulation Panel -->
+    <button class="theme-toggle-card" id="theme-toggle-card"><span id="theme-icon">🌙</span></button>
     <div class="simulation-panel" id="simulation-panel">
       <p>Loading simulation...</p>
     </div>
   </div>
-
-  <!-- Optional external CSS -->
   <link rel="stylesheet" href="simulation.css">
+  <script src="simulation.js" defer></script>
+ <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const themeToggleCard = document.getElementById('theme-toggle-card');
+  const themeIcon = document.getElementById('theme-icon');
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  root.setAttribute('data-theme', savedTheme);
+  themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  themeToggleCard.addEventListener('click', () => {
+    const currentTheme = root.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', newTheme);
+    themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', newTheme);
+  });
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const themeToggleCard = document.getElementById('theme-toggle-card');
-      const themeIcon = document.getElementById('theme-icon');
-      const root = document.documentElement;
+  // ✅ Load simulation.html first
+  fetch('./simulation.html')
+    .then(response => response.text())
+    .then(data => {
+      const panel = document.getElementById('simulation-panel');
+      panel.innerHTML = data;
 
-      // Load saved theme
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      root.setAttribute('data-theme', savedTheme);
-      themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-      // Toggle theme
-      themeToggleCard.addEventListener('click', () => {
-        const currentTheme = root.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', newTheme);
-        themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-        localStorage.setItem('theme', newTheme);
-      });
-
-      // Load simulation.html dynamically
-      fetch('./simulation.html')
-        .then(res => res.text())
-        .then(html => {
-          const panel = document.getElementById('simulation-panel');
-          panel.innerHTML = html;
-
-          // Load simulation.js dynamically
-          const script = document.createElement('script');
-          script.src = 'simulation.js';
-          script.onload = () => console.log('✅ Simulation loaded successfully');
-          script.onerror = () => console.error('❌ Failed to load simulation.js');
-          document.body.appendChild(script);
-        })
-        .catch(err => {
-          console.error('Simulation load error:', err);
-          document.getElementById('simulation-panel').innerHTML =
-            '<p style="color:#ff5252;">Failed to load simulation.</p>';
-        });
+      // ✅ Then dynamically load simulation.js
+      const script = document.createElement('script');
+      script.src = 'simulation.js';
+      script.onload = () => console.log('✅ Simulation loaded successfully');
+      script.onerror = () => console.error('❌ Failed to load simulation.js');
+      document.body.appendChild(script);
+    })
+    .catch(err => {
+      console.error('Simulation load error:', err);
+      document.getElementById('simulation-panel').innerHTML =
+        '<p style="color:#ff5252;">Failed to load simulation.</p>';
     });
-  </script>
+});
+</script>
+
 </body>
 </html>

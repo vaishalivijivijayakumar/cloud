@@ -1,6 +1,81 @@
-<!-- simulation.html -->
-<!-- Template: Add your simulation markup inside .sim-root -->
+<div class="sim-container" id="sim-container">
+  <!-- TOP MODULE BAR -->
+  <div class="top-module-bar">
+    <div class="module-tabs" id="module-tabs">
+      <button class="module-tab active" data-scene="0">Dalton's Postulates</button>
+      <button class="module-tab" data-scene="1">Chemical Combination</button>
+      <button class="module-tab" data-scene="2">Symbols & Formulae</button>
+      <button class="module-tab" data-scene="3">Mole Concept</button>
+      <button class="module-tab" data-scene="4">Stoichiometry Lab</button>
+    </div>
+    <div class="home-icon" id="home-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
+    </div>
+  </div>
 
-<div data-sim-root id="sim-root" class="sim-root">
-  <!-- Add simulation content here -->
+  <!-- MAIN TWO-PANE LAYOUT -->
+  <div class="main-layout">
+    <!-- LEFT PANE (Simulation Space) -->
+    <div class="left-pane">
+      <div class="micro-view-panel">
+        <div class="thermometer" id="thermometer">
+          <div class="mercury" style="height: 25%;"></div>
+        </div>
+        <canvas id="micro-view-canvas" width="400" height="400"></canvas>
+        <div class="legend-of-colors" id="legend">
+          <!-- Legend items will be added dynamically -->
+        </div>
+      </div>
+      <div class="control-slider-panel">
+        <div class="slider-block" id="slider-1-block">
+          <label for="inp-slider-1">Variable A</label>
+          <span class="slider-value" id="slider-1-value">50</span>
+          <input type="range" id="inp-slider-1" min="0" max="100" value="50">
+        </div>
+        <div class="slider-block" id="slider-2-block">
+          <label for="inp-slider-2">Variable B</label>
+          <span class="slider-value" id="slider-2-value">50</span>
+          <input type="range" id="inp-slider-2" min="0" max="100" value="50">
+        </div>
+        <div class="slider-block" id="slider-3-block">
+          <label for="inp-slider-3">Variable C</label>
+          <span class="slider-value" id="slider-3-value">50</span>
+          <input type="range" id="inp-slider-3" min="0" max="100" value="50">
+        </div>
+        <div class="slider-block" id="slider-4-block">
+          <label for="inp-slider-4">Variable D</label>
+          <span class="slider-value" id="slider-4-value">50</span>
+          <input type="range" id="inp-slider-4" min="0" max="100" value="50">
+        </div>
+        <div class="dropdown-selector">
+            <label for="category-selector">Category</label>
+            <select id="category-selector">
+                <option value="default">Select Type</option>
+            </select>
+        </div>
+        <div class="action-buttons">
+          <button id="btn-run">Run</button>
+          <button id="btn-pause">Pause</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANE (Pedagogical Panel) -->
+    <div class="right-pane">
+      <div class="mst-tabs" id="mst-tabs">
+        <button class="mst-tab active" data-mst="visual">Visual</button>
+        <button class="mst-tab" data-mst="analogy">Analogy</button>
+        <button class="mst-tab" data-mst="cause">Cause</button>
+        <button class="mst-tab" data-mst="model">Model</button>
+        <button class="mst-tab" data-mst="fix">Fix</button>
+      </div>
+      <div class="mst-content-area" id="mst-content-area">
+        <!-- Content will be loaded here dynamically -->
+      </div>
+      <div class="lab-challenges" id="lab-challenges">
+        <!-- Lab challenges will be loaded here dynamically -->
+      </div>
+    </div>
+  </div>
 </div>

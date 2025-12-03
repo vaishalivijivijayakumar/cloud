@@ -1,12 +1,254 @@
-/* simulation.css
-   Template styles for simulations
-   - Expects CSS variables from base-template.html
-   - Add simulation-specific styles below
-*/
+/* simulation.css */
 
-.sim-root {
+/* Main Container */
+.sim-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 40px);
+  max-height: 800px;
   width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: auto;
+  background: var(--color-card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Top Module Bar */
+.top-module-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.module-tabs .module-tab {
+  padding: 10px 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
   color: var(--color-text);
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.module-tabs .module-tab.active,
+.module-tabs .module-tab:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.home-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: color 0.3s ease;
+}
+
+.home-icon:hover {
+  color: var(--color-primary);
+}
+
+/* Main Layout */
+.main-layout {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.left-pane, .right-pane {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.left-pane {
+  flex: 6; /* 60% width */
+  border-right: 1px solid var(--color-border);
+}
+
+.right-pane {
+  flex: 4; /* 40% width */
+  background-color: rgba(0, 120, 255, 0.03);
+}
+
+/* Left Pane Panels */
+.micro-view-panel, .control-slider-panel {
+  background: var(--color-background);
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid var(--color-border);
+}
+
+.micro-view-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-grow: 1;
+}
+
+#micro-view-canvas {
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+  background-color: #FFF;
+}
+[data-theme="dark"] #micro-view-canvas {
+    background-color: var(--color-text);
+}
+
+
+.thermometer {
+    width: 20px;
+    height: 80%;
+    background: #e0e0e0;
+    border-radius: 10px;
+    position: relative;
+    border: 1px solid var(--color-border);
+}
+.thermometer .mercury {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, #ff416c, #ff4b2b);
+    border-radius: 10px;
+    transition: height 0.5s ease;
+}
+
+.control-slider-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.slider-block {
+  display: flex;
+  flex-direction: column;
+}
+.slider-block label {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+.slider-value {
+    align-self: flex-end;
+    font-size: 0.8em;
+    color: var(--color-primary);
+}
+
+.dropdown-selector, .action-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+}
+select, button {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card);
+    color: var(--color-text);
+}
+.action-buttons {
+    flex-direction: row;
+    gap: 10px;
+}
+.action-buttons button {
+    flex-grow: 1;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+#btn-run {
+    background-color: var(--color-primary);
+    color: white;
+}
+#btn-run:hover {
+    opacity: 0.9;
+}
+
+
+/* Right Pane Panels */
+.mst-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mst-tab {
+  padding: 10px 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-text);
+  font-weight: 500;
+  position: relative;
+}
+
+.mst-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-secondary);
+  border-radius: 3px 3px 0 0;
+}
+
+.mst-content-area, .lab-challenges {
+  padding: 15px;
+  background: var(--color-background);
+  border-radius: 12px;
+}
+
+.mst-content-area {
+  flex-grow: 1;
+}
+
+.lab-challenges {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.challenge {
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 5px solid;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.challenge:hover {
+    background-color: var(--color-border);
+}
+
+.challenge .icon { font-weight: bold; }
+.challenge.observe { border-color: #3b82f6; } /* blue */
+.challenge.compare { border-color: #8b5cf6; } /* purple */
+.challenge.experiment { border-color: #22c55e; } /* green */
+.challenge.analyze { border-color: #f97316; } /* orange */
+.challenge.challenge { border-color: #ef4444; } /* red */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  .left-pane {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .control-slider-panel {
+    grid-template-columns: 1fr;
+  }
+  .dropdown-selector, .action-buttons {
+    grid-column: auto;
+  }
 }
